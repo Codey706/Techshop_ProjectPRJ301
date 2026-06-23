@@ -8,7 +8,6 @@ import db.DBContext;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -25,7 +24,12 @@ public class AdminProductDAO extends DBContext {
         List<Products> list = new ArrayList<>();
         try {
 
-            String sql = "select * from Products\n"
+            String sql = "select ProductId,\n"
+                    + "ProductName,\n"
+                    + "BaseSKU,\n"
+                    + "Views,\n"
+                    + "Sold,\n"
+                    + "Status from Products\n"
                     + "order by ProductId desc";
 
             PreparedStatement statement = this.getConnection().prepareStatement(sql);
@@ -34,24 +38,13 @@ public class AdminProductDAO extends DBContext {
 
             while (rs.next()) {
                 Integer ProductId = rs.getInt(1);
-                Integer CategoryId = rs.getInt(2);
-                Integer BrandId = rs.getInt(3);
-                String BaseSKU = rs.getString(4);
-                String ProductName = rs.getString(5);
-                String Slug = rs.getString(6);
-                Integer Views = rs.getInt(7);
-                Integer Sold = rs.getInt(8);
-                Boolean isFeatured = rs.getBoolean(9);
-                Boolean isNew = rs.getBoolean(10);
-                Boolean Deleted = rs.getBoolean(11);
-                Integer Status = rs.getInt(12);
-                String Description = rs.getString(13);
-                Integer CreatedBy = rs.getInt(14);
-                Timestamp PublishedAt = rs.getTimestamp(15);
-                Timestamp CreatedAt = rs.getTimestamp(16);
-                Timestamp UpdateAt = rs.getTimestamp(17);
+                String BaseSKU = rs.getString(2);
+                String ProductName = rs.getString(3);
+                Integer Views = rs.getInt(4);
+                Integer Sold = rs.getInt(5);
+                Integer Status = rs.getInt(6);
 
-                Products product = new Products(ProductId, CategoryId, BrandId, BaseSKU, ProductName, Slug, Views, Sold, isFeatured, isNew, Deleted, Status, Description, CreatedBy, PublishedAt, CreatedAt, UpdateAt);
+                Products product = new Products(ProductId, null, null, BaseSKU, ProductName, null, Views, Sold, null, null, null, Status, null, null, null, null, null);
                 list.add(product);
             }
 
