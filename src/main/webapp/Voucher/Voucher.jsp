@@ -1,20 +1,15 @@
-<%-- 
-    Document   : list (voucher)
-    Author     : Nguyễn Trúc Mai
-    Servlet    : GET /voucher
---%>
-
-<%@page import="model.Vouchers"%>
-<%@page import="java.util.List"%>
-<%@page import="java.math.BigDecimal"%>
+<%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.text.NumberFormat"%>
 <%@page import="java.util.Locale"%>
-<%@page import="java.text.SimpleDateFormat"%>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%
-    request.setAttribute("pageTitle", "Voucher giảm giá");
-%>
-<%@include file="/WEB-INF/include/header.jsp"%>
+<%@page import="java.util.Locale"%>
+<%@page import="model.Vouchers"%>
+<%@page import="model.Vouchers"%>
+<%@page import="java.math.BigDecimal"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.List"%>
+
+<jsp:include page="/WEB-INF/include/header.jsp" />
+<jsp:include page="/WEB-INF/include/navbar.jsp" />
 
 <%
     List<Vouchers> vouchers     = (List<Vouchers>) request.getAttribute("vouchers");
@@ -30,54 +25,54 @@
 <!-- Breadcrumb -->
 <nav aria-label="breadcrumb" class="mb-3">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="<%= request.getContextPath()%>/home">Trang chủ</a></li>
-        <li class="breadcrumb-item"><a href="<%= request.getContextPath()%>/cart">Giỏ hàng</a></li>
-        <li class="breadcrumb-item active">Mã giảm giá</li>
+        <li class="breadcrumb-item"><a href="<%= request.getContextPath()%>/home">Trang ch?</a></li>
+        <li class="breadcrumb-item"><a href="<%= request.getContextPath()%>/cart">Gi? h�ng</a></li>
+        <li class="breadcrumb-item active">M� gi?m gi�</li>
     </ol>
 </nav>
 
-<h4 class="fw-bold mb-1">🎟️ Mã giảm giá</h4>
-<p class="text-muted mb-4">Chọn hoặc nhập mã để được giảm giá cho đơn hàng của bạn.</p>
+<h4 class="fw-bold mb-1">?? M� gi?m gi�</h4>
+<p class="text-muted mb-4">Ch?n ho?c nh?p m� ?? ???c gi?m gi� cho ??n h�ng c?a b?n.</p>
 
-<!-- Thông tin đơn hiện tại -->
+<!-- Th�ng tin ??n hi?n t?i -->
 <div class="alert alert-info d-flex justify-content-between align-items-center">
     <span>
-        Tổng giỏ hàng: <strong class="text-danger"><%= nf.format(subtotal)%>đ</strong>
+        T?ng gi? h�ng: <strong class="text-danger"><%= nf.format(subtotal)%>?</strong>
     </span>
     <% if (appliedVoucher != null) { %>
     <span>
-        Đang áp dụng:
+        ?ang �p d?ng:
         <span class="badge bg-success fs-6"><%= appliedVoucher.getCode()%></span>
         <form method="post" action="<%= request.getContextPath()%>/voucher/remove" class="d-inline ms-2">
-            <button type="submit" class="btn btn-sm btn-outline-danger">Hủy</button>
+            <button type="submit" class="btn btn-sm btn-outline-danger">H?y</button>
         </form>
     </span>
     <% } %>
 </div>
 
-<!-- Nhập mã thủ công -->
+<!-- Nh?p m� th? c�ng -->
 <div class="card shadow-sm mb-4">
     <div class="card-body">
-        <h6 class="fw-semibold mb-3">Nhập mã thủ công</h6>
+        <h6 class="fw-semibold mb-3">Nh?p m� th? c�ng</h6>
         <form method="post"
               action="<%= request.getContextPath()%>/voucher/apply"
               class="d-flex gap-2">
             <input type="text" name="voucherCode" class="form-control"
-                   placeholder="Nhập mã giảm giá (VD: SALE20)..."
+                   placeholder="Nh?p m� gi?m gi� (VD: SALE20)..."
                    style="max-width:300px;"
                    value="<%= appliedVoucher != null ? appliedVoucher.getCode() : ""%>">
-            <button type="submit" class="btn btn-primary">Áp dụng</button>
+            <button type="submit" class="btn btn-primary">�p d?ng</button>
         </form>
     </div>
 </div>
 
-<!-- Danh sách voucher -->
-<h6 class="fw-semibold mb-3">Voucher có sẵn</h6>
+<!-- Danh s�ch voucher -->
+<h6 class="fw-semibold mb-3">Voucher c� s?n</h6>
 
 <% if (vouchers == null || vouchers.isEmpty()) { %>
 <div class="text-center py-5 text-muted">
-    <p style="font-size:3rem;">🎟️</p>
-    <p>Hiện không có voucher nào khả dụng.</p>
+    <p style="font-size:3rem;">??</p>
+    <p>Hi?n kh�ng c� voucher n�o kh? d?ng.</p>
 </div>
 
 <% } else { %>
@@ -97,58 +92,58 @@
         <div class="card h-100 shadow-sm border-2 <%= cardClass %>">
             <div class="card-body">
 
-                <!-- Phần trăm giảm -->
+                <!-- Ph?n tr?m gi?m -->
                 <div class="d-flex justify-content-between align-items-start mb-2">
                     <span style="font-size:2.2rem;font-weight:800;color:#dc3545;">
-                        −<%= v.getDiscountPercent().stripTrailingZeros().toPlainString()%>%
+                        ?<%= v.getDiscountPercent().stripTrailingZeros().toPlainString()%>%
                     </span>
                     <% if (isApplied) { %>
-                    <span class="badge bg-success">✓ Đang dùng</span>
+                    <span class="badge bg-success">? ?ang d�ng</span>
                     <% } else if (!eligible) { %>
-                    <span class="badge bg-secondary">Chưa đủ điều kiện</span>
+                    <span class="badge bg-secondary">Ch?a ?? ?i?u ki?n</span>
                     <% } %>
                 </div>
 
-                <!-- Mã voucher -->
+                <!-- M� voucher -->
                 <div class="fw-bold text-primary fs-5 mb-2">
                     <code class="bg-light px-2 py-1 rounded"><%= v.getCode()%></code>
                 </div>
 
-                <!-- Điều kiện -->
+                <!-- ?i?u ki?n -->
                 <ul class="list-unstyled text-muted small mb-3">
-                    <li>✦ Đơn tối thiểu:
-                        <strong class="text-dark"><%= nf.format(v.getMinimumOrder())%>đ</strong>
+                    <li>? ??n t?i thi?u:
+                        <strong class="text-dark"><%= nf.format(v.getMinimumOrder())%>?</strong>
                     </li>
-                    <li>✦ Còn lại: <strong class="text-dark"><%= remaining%></strong> lượt</li>
-                    <li>✦ Hết hạn: <strong class="text-dark"><%= expireStr%></strong></li>
+                    <li>? C�n l?i: <strong class="text-dark"><%= remaining%></strong> l??t</li>
+                    <li>? H?t h?n: <strong class="text-dark"><%= expireStr%></strong></li>
                 </ul>
 
-                <!-- Cảnh báo chưa đủ điều kiện -->
+                <!-- C?nh b�o ch?a ?? ?i?u ki?n -->
                 <% if (!eligible && !isApplied) {
                     BigDecimal need = v.getMinimumOrder().subtract(subtotal);
                 %>
                 <p class="text-warning small mb-2">
-                    ⚠ Cần thêm <strong><%= nf.format(need)%>đ</strong> để dùng mã này
+                    ? C?n th�m <strong><%= nf.format(need)%>?</strong> ?? d�ng m� n�y
                 </p>
                 <% } %>
 
-                <!-- Nút hành động -->
+                <!-- N�t h�nh ??ng -->
                 <% if (isApplied) { %>
                 <form method="post" action="<%= request.getContextPath()%>/voucher/remove">
                     <button type="submit" class="btn btn-outline-danger btn-sm w-100">
-                        Hủy áp dụng
+                        H?y �p d?ng
                     </button>
                 </form>
                 <% } else if (eligible) { %>
                 <form method="post" action="<%= request.getContextPath()%>/voucher/apply">
                     <input type="hidden" name="voucherCode" value="<%= v.getCode()%>">
                     <button type="submit" class="btn btn-primary btn-sm w-100">
-                        Dùng ngay
+                        D�ng ngay
                     </button>
                 </form>
                 <% } else { %>
                 <button class="btn btn-secondary btn-sm w-100" disabled>
-                    Chưa đủ điều kiện
+                    Ch?a ?? ?i?u ki?n
                 </button>
                 <% } %>
 
@@ -160,10 +155,10 @@
 
 <% } %>
 
-<!-- Nút quay lại giỏ hàng -->
+<!-- N�t quay l?i gi? h�ng -->
 <div class="mt-4">
     <a href="<%= request.getContextPath()%>/cart" class="btn btn-outline-secondary">
-        ← Quay lại giỏ hàng
+        ? Quay l?i gi? h�ng
     </a>
 </div>
 

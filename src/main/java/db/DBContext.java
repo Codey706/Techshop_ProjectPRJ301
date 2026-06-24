@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+
 package db;
 
 import java.sql.Connection;
@@ -23,7 +24,7 @@ public class DBContext {
     private Connection conn;
     private final String DB_URL = "jdbc:sqlserver://127.0.0.1:1433;databaseName=MiraiStoreDB;encrypt=false";
     private final String DB_USER = "sa";
-    private final String DB_PWD = "123456";
+    private final String DB_PWD = "123456789";
 
     public DBContext() {
         try {
