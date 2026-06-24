@@ -1,0 +1,40 @@
+@charset "UTF-8";
+
+/* Nút tròn xanh cố định góc màn hình */
+.floating-cart {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background-color: #0056b3; 
+    border-radius: 50%;
+    z-index: 9999;
+    transition: all 0.3s ease-in-out;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+.floating-cart-img-wrap {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.floating-cart-inner-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.floating-cart:hover {
+    transform: scale(1.1);
+    background-color: #004085;
+    box-shadow: 0 6px 16px rgba(0, 86, 179, 0.5) !important;
+}
+
+#floating-cart-badge {
+    font-size: 11px;
+    padding: 4px 7px;
+}

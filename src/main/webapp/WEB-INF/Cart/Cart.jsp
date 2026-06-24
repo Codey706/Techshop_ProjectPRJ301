@@ -58,7 +58,7 @@
 
     <div class="text-center py-5">
         <p class="text-muted fs-4">Giỏ hàng trống</p>
-        <a href="<%= request.getContextPath()%>/products" class="btn btn-primary mt-2">
+        <a href="<%= request.getContextPath()%>/home" class="btn btn-primary mt-2">
             Tiếp tục mua sắm
         </a>
     </div>
@@ -253,7 +253,7 @@
                        class="btn btn-danger w-100 py-2 fw-semibold mb-2">
                         Thanh toán
                     </a>
-                    <a href="<%= request.getContextPath()%>/products"
+                    <a href="<%= request.getContextPath()%>/home"
                        class="btn btn-outline-secondary w-100">
                         Tiếp tục mua sắm
                     </a>

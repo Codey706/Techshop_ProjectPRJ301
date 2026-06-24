@@ -1,8 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/footer.css">
 <%-- Lượn sóng --%>
 <div class="w-100 overflow-hidden bg-light" style="height: 20px; margin-top: auto;">
     <svg viewBox="0 0 1200 120" preserveAspectRatio="none" style="width: 100%; height: 20px; display: block;">
-        <path d="M0,0 C150,90 350,10 500,60 C650,110 850,20 1000,70 C1150,120 1250,30 1400,80 L1400,120 L0,120 Z" style="stroke: none; fill: #0056b3;"></path>
+    <path d="M0,0 C150,90 350,10 500,60 C650,110 850,20 1000,70 C1150,120 1250,30 1400,80 L1400,120 L0,120 Z" style="stroke: none; fill: #0056b3;"></path>
     </svg>
 </div>
 
@@ -70,6 +71,17 @@
                 </div>            
             </div>
         </div>
+        <%-- Nút giỏ hàng nổi--%>
+        <a href="${pageContext.request.contextPath}/cart" class="floating-cart shadow-lg d-flex align-items-center justify-content-center text-decoration-none">
+            <div class="floating-cart-img-wrap">
+                <img src="${pageContext.request.contextPath}/assets/images/cart-icon.png" alt="Cart" class="floating-cart-inner-img">
+            </div>
+
+            <%-- Số lượng sản phẩm (badge) --%>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="floating-cart-badge">
+                0
+            </span>
+        </a>
     </div>
 </footer>
 
@@ -77,18 +89,18 @@
 
 <script>
     <%-- Hàm chuyển ngôn ngữ --%>
-  function switchLanguage(lang) {
+    function switchLanguage(lang) {
         let currentUrl = new URL(window.location.href);
         currentUrl.searchParams.set('lang', lang);
         window.location.href = currentUrl.toString();
     }
 
     document.addEventListener("DOMContentLoaded", function () {
-        <%-- LẤY NGÔN NGỮ HIỆN TẠI TỪ URL --%>
+    <%-- LẤY NGÔN NGỮ HIỆN TẠI TỪ URL --%>
         let urlParams = new URLSearchParams(window.location.search);
         let lang = urlParams.get('lang') || 'vi'; // Mặc định là 'vi' nếu không có tham số
 
-        <%--TỰ ĐỘNG ĐỔI TEXT TOÀN TRANG DỰA VÀO DATA ATTRIBUTE --%>
+    <%--TỰ ĐỘNG ĐỔI TEXT TOÀN TRANG DỰA VÀO DATA ATTRIBUTE --%>
         if (lang === 'en') {
             // Tìm tất cả các thẻ có chứa data-en và đổi nội dung thành tiếng Anh
             document.querySelectorAll('[data-en]').forEach(el => {
@@ -109,7 +121,7 @@
             });
         }
 
-        <%--Tự động làm sáng nút dựa trên URL --%>
+    <%--Tự động làm sáng nút dựa trên URL --%>
         let btnEn = document.getElementById('btn-en');
         let btnVi = document.getElementById('btn-vi');
         if (btnEn && btnVi) {
@@ -122,7 +134,7 @@
             }
         }
 
-        <%-- 4. Xử lý thanh điều khiển ô tìm kiếm--%>
+    <%-- 4. Xử lý thanh điều khiển ô tìm kiếm--%>
         const searchInput = document.getElementById('search-input');
         if (searchInput && typeof bootstrap !== 'undefined') {
             const dropdownToggle = new bootstrap.Dropdown(searchInput);
