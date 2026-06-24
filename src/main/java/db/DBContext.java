@@ -1,11 +1,8 @@
-<<<<<<< HEAD
 
-=======
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
->>>>>>> af6b25159cc9ae1946e4fe854956dda3ca35fc7c
 package db;
 
 import java.sql.Connection;
@@ -14,13 +11,13 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-<<<<<<< HEAD
+
 /**
  *
  * @author Huynh Nhu Y
  */
-=======
->>>>>>> af6b25159cc9ae1946e4fe854956dda3ca35fc7c
+
+
 public class DBContext {
 
     private Connection conn;
