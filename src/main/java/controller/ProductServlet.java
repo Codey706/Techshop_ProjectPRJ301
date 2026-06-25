@@ -1,87 +1,137 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  *
  * @author PC
  */
-@WebServlet(name = "ProductServlet", urlPatterns = {"/products"})
+// 1. CẬP NHẬT URL PATTERNS ĐỂ NHẬN CẢ LỆNH SEARCH VÀ FILTER
+@WebServlet(name = "ProductServlet", urlPatterns = {"/products", "/product/detail", "/product/search", "/product/filter"})
 public class ProductServlet extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ProductServlet</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet ProductServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    }
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        response.setContentType("text/html;charset=UTF-8");
+
+        // Lấy đường dẫn URL hiện tại để phân biệt hành động
+        String path = request.getServletPath();
+
+        if (path.equals("/product/search")) {
+            // =================================================================
+            // 2. XỬ LÝ CHỨC NĂNG TÌM KIẾM (/product/search)
+            // =================================================================
+            String keyword = request.getParameter("keyword");
+            if (keyword == null) {
+                keyword = "";
+            }
+            keyword = keyword.trim();
+
+            List<model.Products> searchList = new java.util.ArrayList<>();
+            if (!keyword.isEmpty()) {
+                // Giả lập trả về 3 kết quả tương thích khi tìm kiếm
+                for (int i = 1; i <= 3; i++) {
+                    searchList.add(new model.Products(
+                        i, 1, 1, "SKU-SE" + i, "Kết quả tìm cho: " + keyword + " dòng " + i, "slug-s" + i,
+                        120, 5, true, false, false, 1, "Mô tả sản phẩm tìm kiếm", 1, null, null, null
+                    ));
+                }
+            }
+
+            request.setAttribute("keyword", keyword);
+            request.setAttribute("searchList", searchList);
+            request.getRequestDispatcher("/WEB-INF/Product/search.jsp").forward(request, response);
+
+        } else if (path.equals("/product/filter")) {
+            // =================================================================
+            // 3. XỬ LÝ CHỨC NĂNG LỌC SẢN PHẨM (/product/filter)
+            // =================================================================
+            String brandIdParam = request.getParameter("brandId");
+            String priceParam = request.getParameter("priceRange"); // ví dụ: under-15m, 15m-25m...
+
+            List<model.Products> filterList = new java.util.ArrayList<>();
+            
+            // Giả lập sinh ra 4 sản phẩm theo bộ lọc đã chọn
+            for (int i = 1; i <= 4; i++) {
+                filterList.add(new model.Products(
+                    i, 1, 1, "SKU-FL" + i, "Sản phẩm lọc theo tiêu chí " + i, "slug-f" + i,
+                    80, 2, false, true, false, 1, "Mô tả sản phẩm lọc", 1, null, null, null
+                ));
+            }
+
+            request.setAttribute("selectedBrand", brandIdParam);
+            request.setAttribute("selectedPrice", priceParam);
+            request.setAttribute("filterList", filterList);
+            request.getRequestDispatcher("/WEB-INF/Product/filter.jsp").forward(request, response);
+
+        } else {
+            // =================================================================
+            // 4. XỬ LÝ TRANG CHI TIẾT + DANH SÁCH ĐI KÈM MẶC ĐỊNH (/product/detail hoặc /products)
+            // =================================================================
+            String idParam = request.getParameter("id");
+            int productId = 1;
+            if (idParam != null && !idParam.isEmpty()) {
+                try {
+                    productId = Integer.parseInt(idParam);
+                } catch (NumberFormatException e) {
+                    productId = 1;
+                }
+            }
+
+            model.Products currentProduct = new model.Products(
+                    productId, 1, 1, "SKU-" + productId,
+                    "Laptop Gaming Chiến Thần Số " + productId, "slug-" + productId,
+                    999, 45, true, true, false, 1,
+                    "- CPU: Core Ultra 7 siêu mạnh mẽ\n- RAM: 16GB LPDDR5X\n- Ổ cứng: 512GB SSD NVMe\n- Card đồ họa: RTX 4060 cực mượt",
+                    1, null, null, null
+            );
+            request.setAttribute("product", currentProduct);
+
+            // Xử lý phân trang danh sách đi kèm ở phía dưới
+            String pageParam = request.getParameter("page");
+            int currentPage = 1;
+            if (pageParam != null && !pageParam.isEmpty()) {
+                try {
+                    currentPage = Integer.parseInt(pageParam);
+                } catch (NumberFormatException e) {
+                    currentPage = 1;
+                }
+            }
+
+            List<model.Products> allProducts = new java.util.ArrayList<>();
+            for (int i = 1; i <= 8; i++) {
+                allProducts.add(new model.Products(i, 1, 1, "SKU-" + i, "Sản phẩm Laptop mẫu số " + i, "slug-" + i, 100, 10, true, true, false, 1, "Mô tả", 1, null, null, null));
+            }
+
+            int productsPerPage = 4; 
+            int totalProducts = allProducts.size();
+            int totalPages = (int) Math.ceil((double) totalProducts / productsPerPage);
+            int start = (currentPage - 1) * productsPerPage;
+            int end = Math.min(start + productsPerPage, totalProducts);
+
+            List<model.Products> productsForCurrentPage = new java.util.ArrayList<>();
+            if (start < totalProducts) {
+                productsForCurrentPage = allProducts.subList(start, end);
+            }
+
+            request.setAttribute("productList", productsForCurrentPage);
+            request.setAttribute("currentPage", currentPage);
+            request.setAttribute("totalPages", totalPages);
+
+            request.getRequestDispatcher("/WEB-INF/Product/detail.jsp").forward(request, response);
+        }
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+     
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
 }

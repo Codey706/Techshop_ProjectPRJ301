@@ -1,0 +1,82 @@
+@charset "UTF-8";
+
+/* Container bọc toàn bộ danh mục */
+.category-item {
+    transition: transform 0.2s ease-in-out;
+    text-align: center;
+}
+
+/* Hiệu ứng nhấc nhẹ toàn bộ block khi hover */
+.category-item:hover {
+    transform: translateY(-5px);
+}
+
+/* KHỐI CHỨA ICON:  */
+.category-item .p-2 {
+    width: 100px !important;
+    height: 100px !important;
+    margin: 0 auto;
+    border-radius: 20px;
+    transition: background-color 0.25s ease, box-shadow 0.25s ease;
+    background-color: transparent;
+
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+.category-item .p-2 img {
+    max-width: 80px !important;
+    max-height: 80px !important;
+    object-fit: contain;
+}
+
+/* Khi di chuột vào danh mục: Đổi nền sang màu xanh nhạt chuẩn khối vuông */
+.category-item:hover .p-2 {
+    background-color: #9fd7f9 !important;
+    box-shadow: 0 4px 12px rgba(159, 215, 249, 0.5);
+}
+
+/* Đổi màu chữ sang xanh đậm khi hover */
+.category-item:hover span {
+    color: #0056b3 !important;
+}
+/*============================*/
+/*Bestseller*/
+/*============================*/
+/* Nút mua ngay màu xanh đậm */
+.btn-mirai-buy {
+    background-color: #0056b3 !important;
+    border: none;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+.btn-mirai-buy:hover {
+    background-color: #004085 !important; /* Đậm hơn tí khi hover */
+}
+
+/* Card sản phẩm hiệu ứng nhấc nhẹ */
+.style-product-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.style-product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0, 86, 179, 0.1) !important;
+}
+
+/* Nút Xem thêm phối theo bảng màu */
+.btn-mirai-more {
+    color: #0056b3 !important;
+    border: 2px solid #0056b3 !important;
+    background-color: transparent;
+    border-radius: 8px;
+    transition: all 0.25s ease-in-out;
+}
+
+/* Khi lướt chuột vào nút Xem thêm: Đổi nền sang màu xanh nhạt cực mượt */
+.btn-mirai-more:hover {
+    background-color: #9fd7f9 !important;
+    border-color: #9fd7f9 !important;
+    color: #0056b3 !important;
+    transform: scale(1.05);
+}

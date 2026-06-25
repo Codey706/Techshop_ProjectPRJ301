@@ -7,7 +7,7 @@
 <%@page import="model.Products"%>
 <%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@include file="/WEB-INF/admin/include/header.jsp"%>
+<jsp:include page="/WEB-INF/include/header.jsp" />
 
 <%
     List<Products> list = (List<Products>) request.getAttribute("products");
@@ -77,4 +77,4 @@
     </div>
 </div>
 
-<%@include file="/WEB-INF/admin/include/footer.jsp"%>
+<jsp:include page="/WEB-INF/include/footer.jsp" />
