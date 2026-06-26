@@ -40,7 +40,10 @@ public class ProductDAO {
                         rs.getInt("CreatedBy"),
                         rs.getTimestamp("PublishedAt"),
                         rs.getTimestamp("CreatedAt"),
-                        rs.getTimestamp("UpdatedAt")
+                        rs.getTimestamp("UpdatedAt"), 
+                        null,
+                        null,
+                        null
                 ));
             }
         } catch (Exception e) {

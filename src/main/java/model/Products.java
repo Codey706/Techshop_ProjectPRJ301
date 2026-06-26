@@ -28,11 +28,14 @@ public class Products {
     private Timestamp PublishedAt;
     private Timestamp CreatedAt;
     private Timestamp UpdatedAt;
+    private Categories category;
+    private Brands brand;
+    private ProductImages ProductImg;
 
     public Products() {
     }
 
-    public Products(Integer ProductId, Integer CategoryId, Integer BrandId, String BaseSKU, String ProductName, String Slug, Integer Views, Integer Sold, Boolean IsFeatured, Boolean IsNew, Boolean Deleted, Integer Status, String Description, Integer CreatedBy, Timestamp PublishedAt, Timestamp CreatedAt, Timestamp UpdatedAt) {
+    public Products(Integer ProductId, Integer CategoryId, Integer BrandId, String BaseSKU, String ProductName, String Slug, Integer Views, Integer Sold, Boolean IsFeatured, Boolean IsNew, Boolean Deleted, Integer Status, String Description, Integer CreatedBy, Timestamp PublishedAt, Timestamp CreatedAt, Timestamp UpdatedAt, Categories category, Brands brand, ProductImages ProductImg) {
         this.ProductId = ProductId;
         this.CategoryId = CategoryId;
         this.BrandId = BrandId;
@@ -50,6 +53,9 @@ public class Products {
         this.PublishedAt = PublishedAt;
         this.CreatedAt = CreatedAt;
         this.UpdatedAt = UpdatedAt;
+        this.category = category;
+        this.brand = brand;
+        this.ProductImg = ProductImg;
     }
 
     public Integer getProductId() {
@@ -120,6 +126,19 @@ public class Products {
         return UpdatedAt;
     }
 
+    public Categories getCategory() {
+        return category;
+    }
+
+    public Brands getBrand() {
+        return brand;
+    }
+
+    public ProductImages getProductImg() {
+        return ProductImg;
+    }
+    
+
     public void setProductId(Integer ProductId) {
         this.ProductId = ProductId;
     }
@@ -187,5 +206,16 @@ public class Products {
     public void setUpdatedAt(Timestamp UpdatedAt) {
         this.UpdatedAt = UpdatedAt;
     }
-    
+
+    public void setCategory(Categories category) {
+        this.category = category;
+    }
+
+    public void setBrand(Brands brand) {
+        this.brand = brand;
+    }
+
+    public void setProductImg(ProductImages ProductImg) {
+        this.ProductImg = ProductImg;
+    }
 }

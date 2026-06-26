@@ -40,7 +40,7 @@ public class ProductServlet extends HttpServlet {
                 for (int i = 1; i <= 3; i++) {
                     searchList.add(new model.Products(
                         i, 1, 1, "SKU-SE" + i, "Kết quả tìm cho: " + keyword + " dòng " + i, "slug-s" + i,
-                        120, 5, true, false, false, 1, "Mô tả sản phẩm tìm kiếm", 1, null, null, null
+                        120, 5, true, false, false, 1, "Mô tả sản phẩm tìm kiếm", 1, null, null, null, null, null, null
                     ));
                 }
             }
@@ -62,7 +62,7 @@ public class ProductServlet extends HttpServlet {
             for (int i = 1; i <= 4; i++) {
                 filterList.add(new model.Products(
                     i, 1, 1, "SKU-FL" + i, "Sản phẩm lọc theo tiêu chí " + i, "slug-f" + i,
-                    80, 2, false, true, false, 1, "Mô tả sản phẩm lọc", 1, null, null, null
+                    80, 2, false, true, false, 1, "Mô tả sản phẩm lọc", 1, null, null, null, null, null, null
                 ));
             }
 
@@ -90,7 +90,7 @@ public class ProductServlet extends HttpServlet {
                     "Laptop Gaming Chiến Thần Số " + productId, "slug-" + productId,
                     999, 45, true, true, false, 1,
                     "- CPU: Core Ultra 7 siêu mạnh mẽ\n- RAM: 16GB LPDDR5X\n- Ổ cứng: 512GB SSD NVMe\n- Card đồ họa: RTX 4060 cực mượt",
-                    1, null, null, null
+                    1, null, null, null, null, null, null
             );
             request.setAttribute("product", currentProduct);
 
@@ -107,7 +107,7 @@ public class ProductServlet extends HttpServlet {
 
             List<model.Products> allProducts = new java.util.ArrayList<>();
             for (int i = 1; i <= 8; i++) {
-                allProducts.add(new model.Products(i, 1, 1, "SKU-" + i, "Sản phẩm Laptop mẫu số " + i, "slug-" + i, 100, 10, true, true, false, 1, "Mô tả", 1, null, null, null));
+                allProducts.add(new model.Products(i, 1, 1, "SKU-" + i, "Sản phẩm Laptop mẫu số " + i, "slug-" + i, 100, 10, true, true, false, 1, "Mô tả", 1, null, null, null, null, null, null));
             }
 
             int productsPerPage = 4; 
