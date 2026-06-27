@@ -76,7 +76,8 @@
                     <div class="form-check mb-4">
                         <input class="form-check-input"
                                type="checkbox"
-                               id="remember">
+                               id="remember"
+                               name="remember">
                         <label class="form-check-label" for="remember">
                             Remember me
                         </label>
@@ -100,7 +101,6 @@
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="${pageContext.request.contextPath}/assets/js/login.js"></script>
 
     </body>
 </html>

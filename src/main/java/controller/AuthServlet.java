@@ -24,49 +24,88 @@ public class AuthServlet extends HttpServlet {
 
         String view = request.getParameter("view");
 
+        // ================= LOGIN =================
         if (view == null || view.equals("login")) {
-            request.getRequestDispatcher("/WEB-INF/Auth/login.jsp")
-                    .forward(request, response);
 
-        } else if (view.equals("register")) {
-            request.getRequestDispatcher("/WEB-INF/Auth/register.jsp")
-                    .forward(request, response);
-
-        } else if (view.equals("logout")) {
+            // Nếu đã có Session thì không cần đăng nhập nữa
             HttpSession session = request.getSession(false);
 
-            if (session != null) {
-                session.invalidate();
-            }
+            if (session != null && session.getAttribute("user") != null) {
 
-            response.sendRedirect(request.getContextPath() + "/Auth?view=login");
-        } else if (view.equals("logout")) {
-            HttpSession session = request.getSession(false);
-            if (session != null) {
-                // Lấy thông tin user hiện tại để xóa token trong DB trước khi hủy session
                 Auth user = (Auth) session.getAttribute("user");
-                if (user != null) {
-                    AuthDAO dao = new AuthDAO();
-                    dao.updateRememberMeToken(user.getUserId(), null); // Xóa token trong database
+
+                if (user.getRoleId() == 1) {
+                    response.sendRedirect(request.getContextPath() + "/admin/dashboard");
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/home");
                 }
-                session.invalidate(); // Hủy session
+                return;
             }
 
-            // Xóa cookie "rememberMe" lưu trên trình duyệt của người dùng
+            // Kiểm tra Cookie Remember Me
             Cookie[] cookies = request.getCookies();
+
             if (cookies != null) {
+
+                AuthDAO dao = new AuthDAO();
+
                 for (Cookie cookie : cookies) {
-                    if (cookie.getName().equals("rememberMe")) {
-                        cookie.setValue("");
-                        cookie.setMaxAge(0); // Set thời gian sống bằng 0 để trình duyệt xóa ngay lập tức
-                        cookie.setPath(request.getContextPath());
-                        response.addCookie(cookie);
-                        break;
+
+                    if ("rememberMe".equals(cookie.getName())) {
+
+                        Auth user = dao.loginWithToken(cookie.getValue());
+
+                        if (user != null) {
+
+                            HttpSession newSession = request.getSession();
+                            newSession.setAttribute("user", user);
+
+                            if (user.getRoleId() == 1) {
+                                response.sendRedirect(request.getContextPath() + "/admin/dashboard");
+                            } else {
+                                response.sendRedirect(request.getContextPath() + "/home");
+                            }
+                            return;
+                        }
                     }
                 }
             }
 
-            // 3. Chuyển hướng người dùng về lại trang đăng nhập kèm thông báo
+            request.getRequestDispatcher("/WEB-INF/Auth/login.jsp")
+                    .forward(request, response);
+
+        } // ================= REGISTER =================
+        else if ("register".equals(view)) {
+
+            request.getRequestDispatcher("/WEB-INF/Auth/register.jsp")
+                    .forward(request, response);
+
+        } // ================= LOGOUT =================
+        else if ("logout".equals(view)) {
+
+            HttpSession session = request.getSession(false);
+
+            if (session != null) {
+
+                Auth user = (Auth) session.getAttribute("user");
+
+                if (user != null) {
+
+                    AuthDAO dao = new AuthDAO();
+
+                    // Xóa token trong Database
+                    dao.updateRememberMeToken(user.getUserId(), null);
+                }
+
+                session.invalidate();
+            }
+
+            // Xóa Cookie Remember Me
+            Cookie cookie = new Cookie("rememberMe", "");
+            cookie.setMaxAge(0);
+            cookie.setPath("/");
+            response.addCookie(cookie);
+
             response.sendRedirect(request.getContextPath() + "/Auth?view=login");
         }
     }
@@ -74,12 +113,15 @@ public class AuthServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         String action = request.getParameter("action");
 
-        if (action.equals("login")) {
+        // ================= LOGIN =================
+        if ("login".equals(action)) {
 
             String username = request.getParameter("username");
             String password = request.getParameter("password");
+            boolean remember = request.getParameter("remember") != null;
 
             AuthDAO dao = new AuthDAO();
 
@@ -87,26 +129,48 @@ public class AuthServlet extends HttpServlet {
 
             if (user != null) {
 
-                // KHI ĐĂNG NHẬP THÀNH CÔNG:
+                // Tạo Session
                 HttpSession session = request.getSession();
                 session.setAttribute("user", user);
 
-                // Kiểm tra quyền của tài khoản vừa đăng nhập để điều hướng thông minh
+                // Remember Me
+                if (remember) {
+
+                    String token = java.util.UUID.randomUUID().toString();
+
+                    dao.updateRememberMeToken(user.getUserId(), token);
+
+                    Cookie cookie = new Cookie("rememberMe", token);
+                    cookie.setMaxAge(60 * 60 * 24 * 7); // 7 ngày
+                    cookie.setPath("/");
+                    response.addCookie(cookie);
+
+                } else {
+
+                    dao.updateRememberMeToken(user.getUserId(), null);
+
+                    Cookie cookie = new Cookie("rememberMe", "");
+                    cookie.setMaxAge(0);
+                    cookie.setPath("/");
+                    response.addCookie(cookie);
+                }
+
+                // Redirect theo Role
                 if (user.getRoleId() == 1) {
-                    // Nếu là Admin (RoleId = 1), nhảy thẳng vào trang quản trị Dashboard
                     response.sendRedirect(request.getContextPath() + "/admin/dashboard");
                 } else {
-                    // Nếu là khách hàng bình thường, đẩy về trang chủ mua sắm
-                    response.sendRedirect(request.getContextPath() + "/");
+                    response.sendRedirect(request.getContextPath() + "/home");
                 }
 
             } else {
+
                 request.setAttribute("error", "Invalid username or password.");
 
                 request.getRequestDispatcher("/WEB-INF/Auth/login.jsp")
                         .forward(request, response);
             }
-        } else if (action.equals("register")) {
+        } // ================= REGISTER =================
+        else if ("register".equals(action)) {
 
             String username = request.getParameter("username");
             String email = request.getParameter("email");
@@ -115,43 +179,67 @@ public class AuthServlet extends HttpServlet {
 
             AuthDAO dao = new AuthDAO();
 
-            // 1. Kiểm tra mật khẩu khớp nhau
+            // Kiểm tra Password
             if (!password.equals(confirmPassword)) {
+
                 request.setAttribute("error", "Passwords do not match.");
-                request.getRequestDispatcher("/WEB-INF/Auth/register.jsp").forward(request, response);
+
+                request.getRequestDispatcher("/WEB-INF/Auth/register.jsp")
+                        .forward(request, response);
                 return;
             }
 
-            // 2. Kiểm tra tên tài khoản trùng lặp
+            // Kiểm tra Username
             if (dao.checkUsernameExist(username)) {
+
                 request.setAttribute("error", "Username already exists.");
-                request.getRequestDispatcher("/WEB-INF/Auth/register.jsp").forward(request, response);
+
+                request.getRequestDispatcher("/WEB-INF/Auth/register.jsp")
+                        .forward(request, response);
                 return;
             }
 
-            // 3. Kiểm tra Email trùng lặp
+            // Kiểm tra Email
             if (dao.checkEmailExist(email)) {
+
                 request.setAttribute("error", "Email address already registered.");
-                request.getRequestDispatcher("/WEB-INF/Auth/register.jsp").forward(request, response);
+
+                request.getRequestDispatcher("/WEB-INF/Auth/register.jsp")
+                        .forward(request, response);
                 return;
             }
 
-            // 2. Kiểm tra tài khoản đã tồn tại chưa (Giả định AuthDAO có hàm checkExist hoặc register trả về boolean/int)
-            // Bạn có thể tùy biến logic check tùy thuộc vào cấu trúc database của bạn
+            // Tạo Account
             Auth newAccount = new Auth();
+
             newAccount.setUsername(username);
-            newAccount.setEmail(email);
             newAccount.setPassword(password);
+            newAccount.setEmail(email);
 
-            boolean isRegistered = dao.register(newAccount);
+            // Mặc định
+            newAccount.setFullName(username);
+            newAccount.setRoleId(2);
+            newAccount.setStatus(true);
 
-            if (isRegistered) {
-                request.setAttribute("success", "Registration successful! Please login.");
-                request.getRequestDispatcher("/WEB-INF/Auth/login.jsp").forward(request, response);
+            boolean success = dao.register(newAccount);
+
+            if (success) {
+
+                request.setAttribute("success",
+                        "Registration successful! Please login.");
+
+                request.getRequestDispatcher("/WEB-INF/Auth/login.jsp")
+                        .forward(request, response);
+
             } else {
-                request.setAttribute("error", "Registration failed. Please try again.");
-                request.getRequestDispatcher("/WEB-INF/Auth/register.jsp").forward(request, response);
+
+                request.setAttribute("error",
+                        "Registration failed. Please try again.");
+
+                request.getRequestDispatcher("/WEB-INF/Auth/register.jsp")
+                        .forward(request, response);
             }
+
         }
     }
 }
