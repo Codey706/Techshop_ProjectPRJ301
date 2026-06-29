@@ -1,101 +1,108 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
 import java.sql.Timestamp;
 
-/**
- *
- * @author HP
- */
 public class ProductImages {
 
-    private Integer ImageId;
+    private Integer imageId;
+    private Integer productId;
+    private String imageUrl;
+    private String altText;
+    private Integer displayOrder;
+    private Boolean isThumbnail;
+    private Timestamp createdAt;
     private Products product;
-    private String ImageUrl;
-    private String AltText;
-    private Integer DisplayOrder;
-    private Boolean IsThumbnail;
-    private Boolean Deleted;
-    private Timestamp CreatedAt;
 
     public ProductImages() {
     }
 
-    public ProductImages(Integer ImageId, Products product, String ImageUrl, String AltText, Integer DisplayOrder, Boolean IsThumbnail, Boolean Deleted, Timestamp CreatedAt) {
-        this.ImageId = ImageId;
+    public ProductImages(Integer imageId, Integer productId, String imageUrl,
+            String altText, Integer displayOrder, Boolean isThumbnail,
+            Timestamp createdAt, Products product) {
+        this.imageId = imageId;
+        this.productId = productId;
+        this.imageUrl = imageUrl;
+        this.altText = altText;
+        this.displayOrder = displayOrder;
+        this.isThumbnail = isThumbnail;
+        this.createdAt = createdAt;
         this.product = product;
-        this.ImageUrl = ImageUrl;
-        this.AltText = AltText;
-        this.DisplayOrder = DisplayOrder;
-        this.IsThumbnail = IsThumbnail;
-        this.Deleted = Deleted;
-        this.CreatedAt = CreatedAt;
     }
 
     public Integer getImageId() {
-        return ImageId;
+        return imageId;
+    }
+
+    public void setImageId(Integer imageId) {
+        this.imageId = imageId;
+    }
+
+    public Integer getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Integer productId) {
+        this.productId = productId;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getAltText() {
+        return altText;
+    }
+
+    public void setAltText(String altText) {
+        this.altText = altText;
+    }
+
+    public Integer getDisplayOrder() {
+        return displayOrder;
+    }
+
+    public void setDisplayOrder(Integer displayOrder) {
+        this.displayOrder = displayOrder;
+    }
+
+    public Boolean getIsThumbnail() {
+        return isThumbnail;
+    }
+
+    public void setIsThumbnail(Boolean isThumbnail) {
+        this.isThumbnail = isThumbnail;
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
     }
 
     public Products getProduct() {
         return product;
     }
 
-    public String getImageUrl() {
-        return ImageUrl;
-    }
-
-    public String getAltText() {
-        return AltText;
-    }
-
-    public Integer getDisplayOrder() {
-        return DisplayOrder;
-    }
-
-    public Boolean isThumbnail() {
-        return IsThumbnail;
-    }
-
-    public Boolean isDeleted() {
-        return Deleted;
-    }
-
-    public Timestamp getCreatedAt() {
-        return CreatedAt;
-    }
-
-    public void setImageId(Integer ImageId) {
-        this.ImageId = ImageId;
-    }
-
     public void setProduct(Products product) {
         this.product = product;
     }
 
-    public void setImageUrl(String ImageUrl) {
-        this.ImageUrl = ImageUrl;
-    }
-
-    public void setAltText(String AltText) {
-        this.AltText = AltText;
-    }
-
-    public void setDisplayOrder(Integer DisplayOrder) {
-        this.DisplayOrder = DisplayOrder;
-    }
-
-    public void setIsThumbnail(Boolean IsThumbnail) {
-        this.IsThumbnail = IsThumbnail;
-    }
-
-    public void setDeleted(Boolean Deleted) {
-        this.Deleted = Deleted;
-    }
-
-    public void setCreatedAt(Timestamp CreatedAt) {
-        this.CreatedAt = CreatedAt;
+    @Override
+    public String toString() {
+        return "ProductImages{" +
+                "imageId=" + imageId +
+                ", productId=" + productId +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", altText='" + altText + '\'' +
+                ", displayOrder=" + displayOrder +
+                ", isThumbnail=" + isThumbnail +
+                ", createdAt=" + createdAt +
+                '}';
     }
 }

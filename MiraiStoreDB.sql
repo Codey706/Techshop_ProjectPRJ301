@@ -5,10 +5,11 @@
 ********************************************************************************/
 
 -- Check if the old database exists; if so, disconnect instantly and drop it to re-initialize
+USE master;
+GO
 IF EXISTS (SELECT name FROM master.dbo.sysdatabases WHERE name = N'MiraiStoreDB')
 BEGIN
-    ALTER DATABASE [MiraiStoreDB] SET OFFLINE WITH ROLLBACK IMMEDIATE;
-    ALTER DATABASE [MiraiStoreDB] SET ONLINE;
+    ALTER DATABASE [MiraiStoreDB] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
     DROP DATABASE [MiraiStoreDB];
 END
 GO
@@ -469,14 +470,22 @@ GO
 /*******************************************************************************
    7. PERFORMANCE OPTIMIZATION INDEXES
 ********************************************************************************/
-CREATE INDEX [IX_Product_Name_Slug] ON [dbo].[Products] ([ProductName], [Slug]);
-CREATE INDEX [IX_ProductVariants_SKU_Price] ON [dbo].[ProductVariants] ([VariantSKU], [Price]);
-CREATE INDEX [IX_Orders_User_Status] ON [dbo].[Orders] ([UserId], [Status]);
-CREATE INDEX [IX_OrderDetails_OrderId] ON [dbo].[OrderDetails] ([OrderId]);
+-- Đã xóa bỏ index trùng để tránh báo lỗi lúc chạy lại
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Product_Name_Slug' AND object_id = OBJECT_ID('dbo.Products'))
+    CREATE INDEX [IX_Product_Name_Slug] ON [dbo].[Products] ([ProductName], [Slug]);
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_ProductVariants_SKU_Price' AND object_id = OBJECT_ID('dbo.ProductVariants'))
+    CREATE INDEX [IX_ProductVariants_SKU_Price] ON [dbo].[ProductVariants] ([VariantSKU], [Price]);
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Orders_User_Status' AND object_id = OBJECT_ID('dbo.Orders'))
+    CREATE INDEX [IX_Orders_User_Status] ON [dbo].[Orders] ([UserId], [Status]);
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_OrderDetails_OrderId' AND object_id = OBJECT_ID('dbo.OrderDetails'))
+    CREATE INDEX [IX_OrderDetails_OrderId] ON [dbo].[OrderDetails] ([OrderId]);
 GO
 
 /*******************************************************************************
-   8. AUTOMATED SYNCHRONIZATION TRIGGER (Đã vá lỗi cú pháp đoạn cuối)
+   8. AUTOMATED SYNCHRONIZATION TRIGGER
 ********************************************************************************/
 CREATE TRIGGER [dbo].[TRG_ProductVariants_Update]
 ON [dbo].[ProductVariants]
@@ -516,12 +525,12 @@ INSERT INTO [dbo].[Categories] ([CategoryName]) VALUES (N'Điện thoại'), (N'
 INSERT INTO [dbo].[Brands] ([BrandName]) VALUES (N'Apple'), (N'Logitech');
 
 -- 4. Thêm Products mẫu (Cập nhật trường [Sold] tích lũy để hiển thị Top Products)
+-- Đã đổi tên BaseSKU thứ 2 để không bao giờ trùng Unique Key Ràng buộc
 INSERT INTO [dbo].[Products] ([CategoryId], [BrandId], [BaseSKU], [ProductName], [Slug], [Sold], [Status])
-VALUES (1, 1, 'APL-IP16PM-BASE', N'iPhone 16 Pro Max', 'iphone-16-pro-max', 1240, 1),
+VALUES (1, 1, 'APL-IP16PM-MAIN', N'iPhone 16 Pro Max', 'iphone-16-pro-max', 1240, 1),
        (2, 2, 'LOG-G213-BASE', N'Bàn phím cơ Logitech G213', 'logitech-g213', 850, 1);
 
 -- 5. Thêm Đơn hàng mẫu (Orders - Trạng thái Status = 3 là Completed mới được cộng doanh thu)
--- Giả lập các đơn hàng hoàn thành trong năm 2026 cho trang /revenue
 INSERT INTO [dbo].[Orders] ([UserId], [OrderDate], [Subtotal], [ShippingFee], [DiscountAmount], [TotalAmount], [ReceiverName], [Phone], [ShippingAddress], [Status])
 VALUES 
 (2, '2026-01-15 10:00:00', 45000000.00, 30000.00, 0.00, 45030000.00, N'Nguyễn Văn A', '0901234567', N'Cần Thơ', 3),
@@ -534,13 +543,9 @@ VALUES
 (3, GETDATE(), 1500000.00, 15000.00, 0.00, 1515000.00, N'Trần Thị B', '0907654321', N'Vĩnh Long', 0);
 GO
 
-USE [MiraiStoreDB];
-GO
-
 /*******************************************************************************
    BỔ SUNG THÊM DATA MẪU CHO SẢN PHẨM (ĐỂ XẾP HẠNG TOP PRODUCTS KỲ DIỆU HƠN)
 ********************************************************************************/
--- Thêm một vài sản phẩm công nghệ hot khác cho Mirai Store
 INSERT INTO [dbo].[Products] ([CategoryId], [BrandId], [BaseSKU], [ProductName], [Slug], [Sold], [Status])
 VALUES 
 (1, 1, 'APL-MACAIR-M3', N'MacBook Air M3 13 inch', 'macbook-air-m3', 540, 1),
@@ -549,7 +554,7 @@ VALUES
 (1, 2, 'LOG-SUPERLIGHT2', N'Chuột chơi game Logitech G Pro X Superlight 2', 'logitech-superlight-2', 1100, 1);
 
 -- Cập nhật lại số liệu Sold ngẫu nhiên cho đa dạng
-UPDATE [dbo].[Products] SET [Sold] = 1450 WHERE [BaseSKU] = 'APL-IP16PM-BASE';
+UPDATE [dbo].[Products] SET [Sold] = 1450 WHERE [BaseSKU] = 'APL-IP16PM-MAIN';
 UPDATE [dbo].[Products] SET [Sold] = 890  WHERE [BaseSKU] = 'LOG-G213-BASE';
 
 
@@ -591,31 +596,31 @@ VALUES
 /*******************************************************************************
    BỔ SUNG THÊM ĐƠN HÀNG CHỜ XỬ LÝ (PENDING) VÀ ĐƠN HỦY (CANCELLED)
 ********************************************************************************/
--- Đơn hàng Đang chờ (Status = 0) -> Để trang chủ Overview đếm tăng lên
 INSERT INTO [dbo].[Orders] ([UserId], [OrderDate], [Subtotal], [ShippingFee], [DiscountAmount], [TotalAmount], [ReceiverName], [Phone], [ShippingAddress], [Status])
 VALUES 
 (2, GETDATE(), 34990000, 40000, 0, 35030000, N'Hồ Ngọc Hà', '0912113114', N'Bình Thủy, Cần Thơ', 0),
 (3, GETDATE(), 1350000,  15000, 0, 1365000,  N'Sơn Tùng M-TP', '0915116117', N'Ninh Kiều, Cần Thơ', 0),
 (2, GETDATE(), 4500000,  20000, 50000, 4470000, N'Đen Vâu', '0918119119', N'Cái Răng, Cần Thơ', 0);
 
-<<<<<<< HEAD
+
 -- Define initial specification key parameters mapping specifications metrics options
 INSERT INTO [dbo].[SpecificationDefinitions] ([CategoryId], [SpecName]) VALUES
 (1, N'Chipset CPU'), (1, N'Dung lượng RAM'), (1, N'Kích thước màn hình'), (1, N'Dung lượng Pin'),
 (2, N'Bộ vi xử lý'), (2, N'Card đồ họa (VGA)');
 GO
 
--- Seed parameters registering base catalogue master products items index points
+-- Seed parameters configuring price scales and stock levels across product variants configurations
+-- Đã đổi mã BaseSKU trùng lặp 'APL-IP16PM-BASE' để tránh lỗi Unique
 INSERT INTO [dbo].[Products] ([CategoryId], [BrandId], [BaseSKU], [ProductName], [Slug], [Views], [Sold], [IsFeatured], [IsNew], [Deleted], [Status], [Description], [CreatedBy], [PublishedAt]) VALUES
-(1, 1, 'APL-IP16PM-BASE', N'iPhone 16 Pro Max', 'iphone-16-pro-max', 1540, 48, 1, 1, 0, 1, N'Smartphone cao cấp hàng đầu năm 2026.', 1, '2026-01-10'),
 (1, 2, 'SAM-S26U-BASE', N'Samsung Galaxy S26 Ultra', 'samsung-galaxy-s26-ultra', 980, 22, 1, 1, 0, 1, N'Siêu phẩm tích hợp trí tuệ nhân tạo Galaxy AI mới.', 1, '2026-02-05');
 GO
 
--- Seed parameters configuring price scales and stock levels across product variants configurations
+-- Thêm các biến thể cho sản phẩm chính (Sử dụng đúng ProductId = 1 của iPhone 16)
 INSERT INTO [dbo].[ProductVariants] ([ProductId], [VariantSKU], [VariantName], [OriginalPrice], [Price], [DiscountPercent], [Stock], [ImageUrl], [Status]) VALUES
 (1, 'APL-IP16PM-256-BLK', N'iPhone 16 Pro Max 256GB Đen Titan', 34990000.00, 31990000.00, 9, 25, 'iphone-16-pm-black.png', N'Active'),
 (1, 'APL-IP16PM-512-GLD', N'iPhone 16 Pro Max 512GB Vàng Sa Mạc', 40990000.00, 38990000.00, 5, 12, 'iphone-16-pm-gold.png', N'Active');
 GO
+
 -- 1. Vouchers
 INSERT INTO Vouchers
 (Code, DiscountPercent, MinimumOrder, StartDate, ExpireDate, Quantity, UsedQuantity, Status)
@@ -647,11 +652,12 @@ VALUES
 GO
 
 -- 2. Cart
+-- ĐÃ VÁ LỖI KHÓA NGOẠI: Đổi UserId sang 1, 2, 3 (vì bảng Users chỉ mới sinh đến ID số 3)
 INSERT INTO Cart(UserId)
 VALUES
-(5),
-(6),
-(7);
+(1),
+(2),
+(3);
 GO
 
 -- 3. CartItems
@@ -664,26 +670,27 @@ VALUES
 (2,2,2),
 (3,1,1);
 GO
+
 -- 4. UserVoucher
+-- ĐÃ VÁ LỖI KHÓA NGOẠI: Sửa UserId sang 1, 2, 3 tương thích với dữ liệu có sẵn
 INSERT INTO UserVoucher
 (UserId, VoucherId, UsedCount, LastUsedDate)
 VALUES
-(5,1,1,'2026-06-01'),
-(5,2,0,'2026-06-02'),
-(5,3,1,'2026-06-03'),
+(1,1,1,'2026-06-01'),
+(1,2,0,'2026-06-02'),
+(1,3,1,'2026-06-03'),
 
-(6,4,1,'2026-06-04'),
-(6,5,2,'2026-06-05'),
-(6,6,1,'2026-06-06'),
+(2,4,1,'2026-06-04'),
+(2,5,2,'2026-06-05'),
+(2,6,1,'2026-06-06'),
 
-(7,7,1,'2026-06-07'),
-(7,8,0,'2026-06-08'),
-(7,9,2,'2026-06-09'),
-(7,10,1,'2026-06-10');
-=======
+(3,7,1,'2026-06-07'),
+(3,8,0,'2026-06-08'),
+(3,9,2,'2026-06-09'),
+(3,10,1,'2026-06-10');
+
 -- Đơn hàng Đã hủy (Status = 4) -> Kiểm tra xem bộ lọc doanh thu có bỏ qua chính xác không
 INSERT INTO [dbo].[Orders] ([UserId], [OrderDate], [Subtotal], [ShippingFee], [DiscountAmount], [TotalAmount], [ReceiverName], [Phone], [ShippingAddress], [Status])
 VALUES 
 (2, '2026-05-20', 16000000, 30000, 0, 16030000, N'Khách hàng Boom Hàng', '0999999999', N'Trái Đất', 4);
->>>>>>> b5a60a5 (Update database and dashboard)
 GO

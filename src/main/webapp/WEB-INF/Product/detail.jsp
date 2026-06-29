@@ -47,7 +47,7 @@
 
     <div class="mt-4 row g-3">
         <div class="col-12 col-sm-6">
-            <form action="${pageContext.request.contextPath}/cart/add" method="POST">
+            <form action="${pageContext.request.contextPath}/cart" method="POST">
                 <input type="hidden" name="productId" value="${product.productId}">
                 <button type="submit" class="btn btn-outline-dark w-100 py-2.5 fw-bold" style="border-radius: 8px;">
                     <i class="fa-solid fa-cart-plus me-2"></i>Thêm vào giỏ hàng

@@ -1,221 +1,248 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
 import java.sql.Timestamp;
 
 /**
- *
- * @author HP
+ * Class đối tượng Products tương thích với Cơ sở dữ liệu và giao diện hệ thống.
+ * Đã cấu trúc lại Getter/Setter chuẩn CamelCase để dễ gọi từ file JSP/Servlet.
  */
 public class Products {
-    private Integer ProductId;
-    private Integer CategoryId;
-    private Integer BrandId;
-    private String BaseSKU;
-    private String ProductName;
-    private String Slug;
-    private Integer Views;
-    private Integer Sold;
-    private Boolean IsFeatured;
-    private Boolean IsNew;
-    private Boolean Deleted;
-    private Integer Status;
-    private String Description;
-    private Integer CreatedBy;
-    private Timestamp PublishedAt;
-    private Timestamp CreatedAt;
-    private Timestamp UpdatedAt;
+    private Integer productId;
+    private Integer categoryId;
+    private Integer brandId;
+    private String baseSKU;
+    private String productName;
+    private String slug;
+    private Integer views;
+    private Integer sold;
+    private Boolean isFeatured;
+    private Boolean isNew;
+    private Boolean deleted;
+    private Integer status;
+    private String description;
+    private Double price;       // Bổ sung để hiển thị giá tiền lên home.jsp
+    private String imageUrl;    // Bổ sung để hiển thị hình ảnh đại diện lên home.jsp
+    private Integer createdBy;
+    private Timestamp publishedAt;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
+    
+    // Các thuộc tính liên kết đối tượng (Object quan hệ)
     private Categories category;
     private Brands brand;
-    private ProductImages ProductImg;
+    private ProductImages productImg;
 
+    // 1. Constructor không tham số
     public Products() {
     }
 
-    public Products(Integer ProductId, Integer CategoryId, Integer BrandId, String BaseSKU, String ProductName, String Slug, Integer Views, Integer Sold, Boolean IsFeatured, Boolean IsNew, Boolean Deleted, Integer Status, String Description, Integer CreatedBy, Timestamp PublishedAt, Timestamp CreatedAt, Timestamp UpdatedAt, Categories category, Brands brand, ProductImages ProductImg) {
-        this.ProductId = ProductId;
-        this.CategoryId = CategoryId;
-        this.BrandId = BrandId;
-        this.BaseSKU = BaseSKU;
-        this.ProductName = ProductName;
-        this.Slug = Slug;
-        this.Views = Views;
-        this.Sold = Sold;
-        this.IsFeatured = IsFeatured;
-        this.IsNew = IsNew;
-        this.Deleted = Deleted;
-        this.Status = Status;
-        this.Description = Description;
-        this.CreatedBy = CreatedBy;
-        this.PublishedAt = PublishedAt;
-        this.CreatedAt = CreatedAt;
-        this.UpdatedAt = UpdatedAt;
+    // 2. Constructor đầy đủ tham số
+    public Products(Integer productId, Integer categoryId, Integer brandId, String baseSKU, String productName, 
+                    String slug, Integer views, Integer sold, Boolean isFeatured, Boolean isNew, Boolean deleted, 
+                    Integer status, String description, Double price, String imageUrl, Integer createdBy, 
+                    Timestamp publishedAt, Timestamp createdAt, Timestamp updatedAt, 
+                    Categories category, Brands brand, ProductImages productImg) {
+        this.productId = productId;
+        this.categoryId = categoryId;
+        this.brandId = brandId;
+        this.baseSKU = baseSKU;
+        this.productName = productName;
+        this.slug = slug;
+        this.views = views;
+        this.sold = sold;
+        this.isFeatured = isFeatured;
+        this.isNew = isNew;
+        this.deleted = deleted;
+        this.status = status;
+        this.description = description;
+        this.price = price;
+        this.imageUrl = imageUrl;
+        this.createdBy = createdBy;
+        this.publishedAt = publishedAt;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
         this.category = category;
         this.brand = brand;
-        this.ProductImg = ProductImg;
+        this.productImg = productImg;
     }
 
+    // ==========================================
+    // GETTERS & SETTERS (Chuẩn camelCase)
+    // ==========================================
+
     public Integer getProductId() {
-        return ProductId;
+        return productId;
+    }
+
+    public void setProductId(Integer productId) {
+        this.productId = productId;
     }
 
     public Integer getCategoryId() {
-        return CategoryId;
+        return categoryId;
+    }
+
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
     }
 
     public Integer getBrandId() {
-        return BrandId;
+        return brandId;
+    }
+
+    public void setBrandId(Integer brandId) {
+        this.brandId = brandId;
     }
 
     public String getBaseSKU() {
-        return BaseSKU;
+        return baseSKU;
+    }
+
+    public void setBaseSKU(String baseSKU) {
+        this.baseSKU = baseSKU;
     }
 
     public String getProductName() {
-        return ProductName;
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
     public String getSlug() {
-        return Slug;
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
     }
 
     public Integer getViews() {
-        return Views;
+        return views;
+    }
+
+    public void setViews(Integer views) {
+        this.views = views;
     }
 
     public Integer getSold() {
-        return Sold;
+        return sold;
     }
 
-    public Boolean isFeatured() {
-        return IsFeatured;
+    public void setSold(Integer sold) {
+        this.sold = sold;
     }
 
-    public Boolean isNew() {
-        return IsNew;
+    public Boolean getIsFeatured() {
+        return isFeatured;
     }
 
-    public Boolean isDeleted() {
-        return Deleted;
+    public void setIsFeatured(Boolean isFeatured) {
+        this.isFeatured = isFeatured;
+    }
+
+    public Boolean getIsNew() {
+        return isNew;
+    }
+
+    public void setIsNew(Boolean isNew) {
+        this.isNew = isNew;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 
     public Integer getStatus() {
-        return Status;
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public String getDescription() {
-        return Description;
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public Integer getCreatedBy() {
-        return CreatedBy;
+        return createdBy;
+    }
+
+    public void setCreatedBy(Integer createdBy) {
+        this.createdBy = createdBy;
     }
 
     public Timestamp getPublishedAt() {
-        return PublishedAt;
+        return publishedAt;
+    }
+
+    public void setPublishedAt(Timestamp publishedAt) {
+        this.publishedAt = publishedAt;
     }
 
     public Timestamp getCreatedAt() {
-        return CreatedAt;
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
     }
 
     public Timestamp getUpdatedAt() {
-        return UpdatedAt;
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Timestamp updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public Categories getCategory() {
         return category;
     }
 
-    public Brands getBrand() {
-        return brand;
-    }
-
-    public ProductImages getProductImg() {
-        return ProductImg;
-    }
-    
-
-    public void setProductId(Integer ProductId) {
-        this.ProductId = ProductId;
-    }
-
-    public void setCategoryId(Integer CategoryId) {
-        this.CategoryId = CategoryId;
-    }
-
-    public void setBrandId(Integer BrandId) {
-        this.BrandId = BrandId;
-    }
-
-    public void setBaseSKU(String BaseSKU) {
-        this.BaseSKU = BaseSKU;
-    }
-
-    public void setProductName(String ProductName) {
-        this.ProductName = ProductName;
-    }
-
-    public void setSlug(String Slug) {
-        this.Slug = Slug;
-    }
-
-    public void setViews(Integer Views) {
-        this.Views = Views;
-    }
-
-    public void setSold(Integer Sold) {
-        this.Sold = Sold;
-    }
-
-    public void setIsFeatured(Boolean IsFeatured) {
-        this.IsFeatured = IsFeatured;
-    }
-
-    public void setIsNew(Boolean IsNew) {
-        this.IsNew = IsNew;
-    }
-
-    public void setDeleted(Boolean Deleted) {
-        this.Deleted = Deleted;
-    }
-
-    public void setStatus(Integer Status) {
-        this.Status = Status;
-    }
-
-    public void setDescription(String Description) {
-        this.Description = Description;
-    }
-
-    public void setCreatedBy(Integer CreatedBy) {
-        this.CreatedBy = CreatedBy;
-    }
-
-    public void setPublishedAt(Timestamp PublishedAt) {
-        this.PublishedAt = PublishedAt;
-    }
-
-    public void setCreatedAt(Timestamp CreatedAt) {
-        this.CreatedAt = CreatedAt;
-    }
-
-    public void setUpdatedAt(Timestamp UpdatedAt) {
-        this.UpdatedAt = UpdatedAt;
-    }
-
     public void setCategory(Categories category) {
         this.category = category;
+    }
+
+    public Brands getBrand() {
+        return brand;
     }
 
     public void setBrand(Brands brand) {
         this.brand = brand;
     }
 
-    public void setProductImg(ProductImages ProductImg) {
-        this.ProductImg = ProductImg;
+    public ProductImages getProductImg() {
+        return productImg;
+    }
+
+    public void setProductImg(ProductImages productImg) {
+        this.productImg = productImg;
     }
 }

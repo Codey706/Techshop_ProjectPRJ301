@@ -28,7 +28,7 @@
 
             <div class="login-card">
 
-                <div class="logo-container">
+                <div class="logo-container">                  
                     <img src="${pageContext.request.contextPath}/assets/images/logo.png" 
                          alt="Logo" 
                          class="logo-img-center">

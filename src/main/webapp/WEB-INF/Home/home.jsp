@@ -2,6 +2,8 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/home.css">
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/product-suggestions.css">
+
 <jsp:include page="/WEB-INF/include/header.jsp" />
 <jsp:include page="/WEB-INF/include/navbar.jsp" />
 
@@ -208,267 +210,97 @@
         </div>
     </div> 
 
-    <%-- =========================================
-         SẢN PHẨM BÁN CHẠY (Grid Layout 12 Items)
-         ========================================= --%>
-    <h5 class="fw-bold mb-4" style="color: #333;" data-vi="Sản phẩm bán chạy" data-en="Best Sellers">Sản phẩm bán chạy</h5>
-    
+    <%-- SẢN PHẨM BÁN CHẠY --%>
+    <h5 class="fw-bold mb-4" data-vi="Sản phẩm bán chạy" data-en="Best Sellers">Sản phẩm bán chạy</h5>
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4" id="best-seller-grid">
-        
-        <div class="col product-card-item">
-            <div class="card h-100 border-0 shadow-sm d-flex flex-column justify-content-between overflow-hidden style-product-card">
-                <div class="p-3">
-                    <div class="bg-light rounded-3 d-flex align-items-center justify-content-center" style="height: 200px;">
-                        <i class="fa-solid fa-headphones fs-1 opacity-50" style="color: #0056b3;"></i>
-                    </div>
-                    <h6 class="fw-bold text-dark mt-3 mb-1 text-truncate-2" style="font-size: 15px; height: 44px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                        Tai nghe không dây Sony WH-1000XM5
-                    </h6>
-                    <p class="text-muted small mb-0">SKU: SONY-XM5</p>
-                </div>
-                <div class="card-footer bg-light border-0 d-flex align-items-center justify-content-between p-3">
-                    <span class="fw-bold fs-5" style="color: #0056b3;">6.490.000đ</span>
-                    <a href="${pageContext.request.contextPath}/product/detail?id=1" class="btn btn-sm text-white px-3 py-2 btn-mirai-buy">
-                        <span data-vi="Mua ngay" data-en="Buy Now">Mua ngay</span>
-                    </a>
+        <c:forEach var="p" items="${bestSellers}" varStatus="status">
+            <%-- Ẩn các sản phẩm từ vị trí thứ 6 trở đi --%>
+            <div class="col product-card-item ${status.index >= 6 ? 'product-hidden' : ''}">
+                <div class="card h-100 border-0 shadow-sm p-3">
+                    <img src="${pageContext.request.contextPath}/assets/images/products/${not empty p.imageUrl ? p.imageUrl : 'default-product.png'}" class="img-fluid" style="height: 200px; object-fit: contain;">
+                    <h6 class="fw-bold mt-3">${p.productName}</h6>
+                    <span class="fw-bold text-primary"><fmt:formatNumber value="${p.price}" type="number" maxFractionDigits="0"/>đ</span>
                 </div>
             </div>
-        </div>
-
-        <div class="col product-card-item">
-            <div class="card h-100 border-0 shadow-sm d-flex flex-column justify-content-between overflow-hidden style-product-card">
-                <div class="p-3">
-                    <div class="bg-light rounded-3 d-flex align-items-center justify-content-center" style="height: 200px;">
-                        <i class="fa-solid fa-laptop fs-1 opacity-50" style="color: #0056b3;"></i>
-                    </div>
-                    <h6 class="fw-bold text-dark mt-3 mb-1 text-truncate-2" style="font-size: 15px; height: 44px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                        Laptop ASUS ROG Strix G16 (2024)
-                    </h6>
-                    <p class="text-muted small mb-0">SKU: ROG-G16</p>
-                </div>
-                <div class="card-footer bg-light border-0 d-flex align-items-center justify-content-between p-3">
-                    <span class="fw-bold fs-5" style="color: #0056b3;">34.500.000đ</span>
-                    <a href="${pageContext.request.contextPath}/product/detail?id=2" class="btn btn-sm text-white px-3 py-2 btn-mirai-buy">
-                        <span data-vi="Mua ngay" data-en="Buy Now">Mua ngay</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col product-card-item">
-            <div class="card h-100 border-0 shadow-sm d-flex flex-column justify-content-between overflow-hidden style-product-card">
-                <div class="p-3">
-                    <div class="bg-light rounded-3 d-flex align-items-center justify-content-center" style="height: 200px;">
-                        <i class="fa-solid fa-keyboard fs-1 opacity-50" style="color: #0056b3;"></i>
-                    </div>
-                    <h6 class="fw-bold text-dark mt-3 mb-1 text-truncate-2" style="font-size: 15px; height: 44px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                        Bàn phím cơ NuPhy Air75 V2 Low-Profile
-                    </h6>
-                    <p class="text-muted small mb-0">SKU: NUPHY-A75</p>
-                </div>
-                <div class="card-footer bg-light border-0 d-flex align-items-center justify-content-between p-3">
-                    <span class="fw-bold fs-5" style="color: #0056b3;">2.990.000đ</span>
-                    <a href="${pageContext.request.contextPath}/product/detail?id=3" class="btn btn-sm text-white px-3 py-2 btn-mirai-buy">
-                        <span data-vi="Mua ngay" data-en="Buy Now">Mua ngay</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col product-card-item">
-            <div class="card h-100 border-0 shadow-sm d-flex flex-column justify-content-between overflow-hidden style-product-card">
-                <div class="p-3">
-                    <div class="bg-light rounded-3 d-flex align-items-center justify-content-center" style="height: 200px;">
-                        <i class="fa-solid fa-mouse fs-1 opacity-50" style="color: #0056b3;"></i>
-                    </div>
-                    <h6 class="fw-bold text-dark mt-3 mb-1 text-truncate-2" style="font-size: 15px; height: 44px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                        Chuột không dây Logitech G Pro X Superlight 2
-                    </h6>
-                    <p class="text-muted small mb-0">SKU: LOGI-SUPER2</p>
-                </div>
-                <div class="card-footer bg-light border-0 d-flex align-items-center justify-content-between p-3">
-                    <span class="fw-bold fs-5" style="color: #0056b3;">3.290.000đ</span>
-                    <a href="#" class="btn btn-sm text-white px-3 py-2 btn-mirai-buy">Mua ngay</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col product-card-item">
-            <div class="card h-100 border-0 shadow-sm d-flex flex-column justify-content-between overflow-hidden style-product-card">
-                <div class="p-3">
-                    <div class="bg-light rounded-3 d-flex align-items-center justify-content-center" style="height: 200px;">
-                        <i class="fa-solid fa-tv fs-1 opacity-50" style="color: #0056b3;"></i>
-                    </div>
-                    <h6 class="fw-bold text-dark mt-3 mb-1 text-truncate-2" style="font-size: 15px; height: 44px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                        Màn hình LG UltraGear 27GR75Q-B 2K 165Hz
-                    </h6>
-                    <p class="text-muted small mb-0">SKU: LG-27GR75Q</p>
-                </div>
-                <div class="card-footer bg-light border-0 d-flex align-items-center justify-content-between p-3">
-                    <span class="fw-bold fs-5" style="color: #0056b3;">5.990.000đ</span>
-                    <a href="#" class="btn btn-sm text-white px-3 py-2 btn-mirai-buy">Mua ngay</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col product-card-item">
-            <div class="card h-100 border-0 shadow-sm d-flex flex-column justify-content-between overflow-hidden style-product-card">
-                <div class="p-3">
-                    <div class="bg-light rounded-3 d-flex align-items-center justify-content-center" style="height: 200px;">
-                        <i class="fa-solid fa-chair fs-1 opacity-50" style="color: #0056b3;"></i>
-                    </div>
-                    <h6 class="fw-bold text-dark mt-3 mb-1 text-truncate-2" style="font-size: 15px; height: 44px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                        Ghế công thái học Sihoo M57 - Bản kê chân
-                    </h6>
-                    <p class="text-muted small mb-0">SKU: SIHOO-M57</p>
-                </div>
-                <div class="card-footer bg-light border-0 d-flex align-items-center justify-content-between p-3">
-                    <span class="fw-bold fs-5" style="color: #0056b3;">3.650.000đ</span>
-                    <a href="#" class="btn btn-sm text-white px-3 py-2 btn-mirai-buy">Mua ngay</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col product-card-item">
-            <div class="card h-100 border-0 shadow-sm d-flex flex-column justify-content-between overflow-hidden style-product-card">
-                <div class="p-3">
-                    <div class="bg-light rounded-3 d-flex align-items-center justify-content-center" style="height: 200px;">
-                        <i class="fa-solid fa-microchip fs-1 opacity-50" style="color: #0056b3;"></i>
-                    </div>
-                    <h6 class="fw-bold text-dark mt-3 mb-1 text-truncate-2" style="font-size: 15px; height: 44px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                        Mini PC ASUS PN64 Intel Core i5-13500H
-                    </h6>
-                    <p class="text-muted small mb-0">SKU: ASUS-PN64</p>
-                </div>
-                <div class="card-footer bg-light border-0 d-flex align-items-center justify-content-between p-3">
-                    <span class="fw-bold fs-5" style="color: #0056b3;">11.200.000đ</span>
-                    <a href="#" class="btn btn-sm text-white px-3 py-2 btn-mirai-buy">Mua ngay</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col product-card-item">
-            <div class="card h-100 border-0 shadow-sm d-flex flex-column justify-content-between overflow-hidden style-product-card">
-                <div class="p-3">
-                    <div class="bg-light rounded-3 d-flex align-items-center justify-content-center" style="height: 200px;">
-                        <i class="fa-solid fa-gamepad fs-1 opacity-50" style="color: #0056b3;"></i>
-                    </div>
-                    <h6 class="fw-bold text-dark mt-3 mb-1 text-truncate-2" style="font-size: 15px; height: 44px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                        Tay cầm Xbox Wireless Controller Black
-                    </h6>
-                    <p class="text-muted small mb-0">SKU: XBOX-CARBON</p>
-                </div>
-                <div class="card-footer bg-light border-0 d-flex align-items-center justify-content-between p-3">
-                    <span class="fw-bold fs-5" style="color: #0056b3;">1.450.000đ</span>
-                    <a href="#" class="btn btn-sm text-white px-3 py-2 btn-mirai-buy">Mua ngay</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col product-card-item">
-            <div class="card h-100 border-0 shadow-sm d-flex flex-column justify-content-between overflow-hidden style-product-card">
-                <div class="p-3">
-                    <div class="bg-light rounded-3 d-flex align-items-center justify-content-center" style="height: 200px;">
-                        <i class="fa-solid fa-volume-high fs-1 opacity-50" style="color: #0056b3;"></i>
-                    </div>
-                    <h6 class="fw-bold text-dark mt-3 mb-1 text-truncate-2" style="font-size: 15px; height: 44px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                        Loa Bluetooth Marshall Emberton II
-                    </h6>
-                    <p class="text-muted small mb-0">SKU: MAR-EMBER2</p>
-                </div>
-                <div class="card-footer bg-light border-0 d-flex align-items-center justify-content-between p-3">
-                    <span class="fw-bold fs-5" style="color: #0056b3;">3.890.000đ</span>
-                    <a href="#" class="btn btn-sm text-white px-3 py-2 btn-mirai-buy">Mua ngay</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col product-card-item">
-            <div class="card h-100 border-0 shadow-sm d-flex flex-column justify-content-between overflow-hidden style-product-card">
-                <div class="p-3">
-                    <div class="bg-light rounded-3 d-flex align-items-center justify-content-center" style="height: 200px;">
-                        <i class="fa-solid fa-bag-shopping fs-1 opacity-50" style="color: #0056b3;"></i>
-                    </div>
-                    <h6 class="fw-bold text-dark mt-3 mb-1 text-truncate-2" style="font-size: 15px; height: 44px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                        Balo Laptop Peak Design Everyday 20L
-                    </h6>
-                    <p class="text-muted small mb-0">SKU: PEAK-ED20L</p>
-                </div>
-                <div class="card-footer bg-light border-0 d-flex align-items-center justify-content-between p-3">
-                    <span class="fw-bold fs-5" style="color: #0056b3;">6.200.000đ</span>
-                    <a href="#" class="btn btn-sm text-white px-3 py-2 btn-mirai-buy">Mua ngay</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col product-card-item">
-            <div class="card h-100 border-0 shadow-sm d-flex flex-column justify-content-between overflow-hidden style-product-card">
-                <div class="p-3">
-                    <div class="bg-light rounded-3 d-flex align-items-center justify-content-center" style="height: 200px;">
-                        <i class="fa-solid fa-table fs-1 opacity-50" style="color: #0056b3;"></i>
-                    </div>
-                    <h6 class="fw-bold text-dark mt-3 mb-1 text-truncate-2" style="font-size: 15px; height: 44px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                        Bàn nâng hạ thông minh Epione SmartDesk
-                    </h6>
-                    <p class="text-muted small mb-0">SKU: EPI-SDPRO</p>
-                </div>
-                <div class="card-footer bg-light border-0 d-flex align-items-center justify-content-between p-3">
-                    <span class="fw-bold fs-5" style="color: #0056b3;">8.490.000đ</span>
-                    <a href="#" class="btn btn-sm text-white px-3 py-2 btn-mirai-buy">Mua ngay</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col product-card-item">
-            <div class="card h-100 border-0 shadow-sm d-flex flex-column justify-content-between overflow-hidden style-product-card">
-                <div class="p-3">
-                    <div class="bg-light rounded-3 d-flex align-items-center justify-content-center" style="height: 200px;">
-                        <i class="fa-solid fa-compact-disc fs-1 opacity-50" style="color: #0056b3;"></i>
-                    </div>
-                    <h6 class="fw-bold text-dark mt-3 mb-1 text-truncate-2" style="font-size: 15px; height: 44px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                        Microsoft Office Home & Business 2024
-                    </h6>
-                    <p class="text-muted small mb-0">SKU: MS-OFF24</p>
-                </div>
-                <div class="card-footer bg-light border-0 d-flex align-items-center justify-content-between p-3">
-                    <span class="fw-bold fs-5" style="color: #0056b3;">4.250.000đ</span>
-                    <a href="#" class="btn btn-sm text-white px-3 py-2 btn-mirai-buy">Mua ngay</a>
-                </div>
-            </div>
-        </div>
-
+        </c:forEach>
+    </div>
+    
+    <%-- Nút Xem thêm dùng ảnh mascot của bạn --%>
+    <div class="text-center my-5">
+        <a href="javascript:void(0);" id="load-more-best-seller" class="btn-view-more-wrapper">
+            <img src="${pageContext.request.contextPath}/assets/images/view-more-mascot.jpg" 
+                 alt="Xem thêm" class="view-more-img" 
+                 data-vi="${pageContext.request.contextPath}/assets/images/view-more-mascot.jpg"
+                 data-en="${pageContext.request.contextPath}/assets/images/view-more-mascot-en.jpg">
+        </a>
     </div>
 
-    <%-- Nút Xem Thêm --%>
-    <div class="text-center mt-5 mb-5">
-        <button id="load-more-btn" class="btn btn-mirai-more fw-bold px-4 py-2">
-            <span data-vi="Xem thêm sản phẩm" data-en="View More Products">Xem thêm sản phẩm</span>
-        </button>
-    </div>
+    <%-- GỢI Ý CHO BẠN --%>
+    <h3 class="fw-bold text-center mb-4" data-vi="Gợi ý cho bạn" data-en="Recommended for You">Gợi ý cho bạn</h3>
+    <ul class="nav nav-pills justify-content-center mb-4" id="suggestionTabs" role="tablist">
+        <c:forEach items="${categoryList}" var="cat" varStatus="status">
+            <li class="nav-item">
+                <button class="nav-link ${status.first ? 'active' : ''}" data-bs-toggle="tab" data-bs-target="#cat-${cat.categoryId}">${cat.categoryName}</button>
+            </li>
+        </c:forEach>
+    </ul>
 
+    <div class="tab-content">
+        <c:forEach items="${categoryList}" var="cat" varStatus="status">
+            <div class="tab-pane fade ${status.first ? 'show active' : ''}" id="cat-${cat.categoryId}">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 g-3 suggestion-grid">
+                    <c:forEach items="${productsMap[cat.categoryId]}" var="p" varStatus="pStatus">
+                        <div class="col suggestion-item ${pStatus.index >= 5 ? 'product-hidden' : ''}">
+                            <div class="card h-100 p-2">
+                                <img src="${pageContext.request.contextPath}/assets/images/products/${not empty p.imageUrl ? p.imageUrl : 'default-product.png'}" class="card-img-top">
+                                <div class="card-body">
+                                    <h6 class="small">${p.productName}</h6>
+                                    <p class="text-primary fw-bold"><fmt:formatNumber value="${p.price}" type="number" maxFractionDigits="0"/>đ</p>
+                                </div>
+                            </div>
+                        </div>
+                    </c:forEach>
+                </div>
+                <div class="text-center mt-3">
+                    <button class="btn btn-sm btn-outline-secondary load-more-suggestion" data-vi="Xem thêm" data-en="Load More">Xem thêm</button>
+                </div>
+            </div>
+        </c:forEach>
+    </div>
 </main>
+
+<jsp:include page="/WEB-INF/include/footer.jsp" />
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const itemsPerPage = 6; // Mặc định hiển thị 6 sản phẩm (2 hàng)
-        const products = document.querySelectorAll(".product-card-item");
-        const loadMoreBtn = document.getElementById("load-more-btn");
-
-        // Ẩn các sản phẩm từ vị trí index thứ 6 trở đi
-        products.forEach((product, index) => {
-            if (index >= itemsPerPage) {
-                product.style.display = "none";
+        // 1. LOGIC ĐA NGÔN NGỮ
+        let lang = new URLSearchParams(window.location.search).get('lang') || 'vi';
+        document.querySelectorAll('[data-vi][data-en]').forEach(el => {
+            if (el.classList.contains('view-more-img')) {
+                el.src = el.getAttribute('data-' + lang);
+            } else {
+                el.textContent = el.getAttribute('data-' + lang);
             }
         });
 
-        // Xử lý click hiện thêm sản phẩm
-        loadMoreBtn.addEventListener("click", function () {
-            products.forEach(product => {
-                product.style.display = "block";
+        // 2. LOGIC "XEM THÊM" BÁN CHẠY (Dùng mascot)
+        const loadMoreBestSeller = document.getElementById("load-more-best-seller");
+        loadMoreBestSeller.addEventListener("click", function() {
+            document.querySelectorAll(".product-card-item.product-hidden").forEach(item => {
+                item.classList.remove("product-hidden");
             });
-            loadMoreBtn.style.display = "none"; // Ẩn nút đi sau khi bung toàn bộ 12 sản phẩm
+            this.style.display = "none";
+        });
+
+        // 3. LOGIC "XEM THÊM" GỢI Ý (Dùng button)
+        document.querySelectorAll(".load-more-suggestion").forEach(btn => {
+            btn.addEventListener("click", function() {
+                const pane = this.closest('.tab-pane');
+                pane.querySelectorAll(".suggestion-item.product-hidden").forEach(item => {
+                    item.classList.remove("product-hidden");
+                });
+                this.style.display = "none";
+            });
         });
     });
 </script>
-
-<jsp:include page="/WEB-INF/include/footer.jsp" />
