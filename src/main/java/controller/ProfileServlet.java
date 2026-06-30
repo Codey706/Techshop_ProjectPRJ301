@@ -5,20 +5,21 @@
 package controller;
 
 import dao.AdminProfileDAO;
-import db.DBContext;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import model.Auth;
 import model.User;
 
-@WebServlet(name = "ProfileServlet", urlPatterns = {"/profile"})
+@WebServlet(name = "ProfileServlet", urlPatterns = {
+    "/profile",
+    "/profile/update",
+    "/profile/change-password"
+})
 public class ProfileServlet extends HttpServlet {
 
     @Override
@@ -27,12 +28,18 @@ public class ProfileServlet extends HttpServlet {
             HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession session = request.getSession();
+        HttpSession session = request.getSession(false);
 
-        User user
-                = (User) session.getAttribute("user");
+        if (session == null) {
+            response.sendRedirect(
+                    request.getContextPath() + "/Auth?view=login"
+            );
+            return;
+        }
 
-        if (user == null) {
+        Auth auth = (Auth) session.getAttribute("user");
+
+        if (auth == null) {
 
             response.sendRedirect(
                     request.getContextPath()
@@ -41,12 +48,13 @@ public class ProfileServlet extends HttpServlet {
 
             return;
         }
+
         AdminProfileDAO dao
                 = new AdminProfileDAO();
 
         User profile
                 = dao.getProfile(
-                        user.getUserId()
+                        auth.getUserId()
                 );
 
         request.setAttribute(
@@ -55,15 +63,58 @@ public class ProfileServlet extends HttpServlet {
         );
 
         request.getRequestDispatcher(
-                "/profile/Profile.jsp"
+                "/WEB-INF/profile/profile.jsp"
         )
                 .forward(request, response);
-
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(
+            HttpServletRequest request,
+            HttpServletResponse response)
             throws ServletException, IOException {
+
+        String path
+                = request.getServletPath();
+
+        if (path.equals("/profile/update")) {
+
+            updateProfile(
+                    request,
+                    response
+            );
+
+        } else if (path.equals("/profile/change-password")) {
+
+            changePassword(
+                    request,
+                    response
+            );
+
+        }
+
+    }
+
+    private void updateProfile(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws IOException {
+
+        HttpSession session
+                = request.getSession();
+
+        Auth auth = (Auth) session.getAttribute("user");
+
+        if (auth == null) {
+
+            response.sendRedirect(
+                    request.getContextPath()
+                    + "/Auth?view=login"
+            );
+
+            return;
+        }
+
         String name
                 = request.getParameter("name");
 
@@ -76,13 +127,18 @@ public class ProfileServlet extends HttpServlet {
         String gender
                 = request.getParameter("gender");
 
-        User user
-                = (User) request.getSession()
-                        .getAttribute("user");
+        User user = new User();
+
+        user.setUserId(
+                auth.getUserId()
+        );
 
         user.setFullName(name);
+
         user.setEmail(email);
+
         user.setPhone(phone);
+
         user.setGender(gender);
 
         AdminProfileDAO dao
@@ -90,27 +146,41 @@ public class ProfileServlet extends HttpServlet {
 
         dao.updateProfile(user);
 
-        response.sendRedirect("profile");
-    }
+// cập nhật lại thông tin trong session
+        auth.setFullName(name);
+        auth.setEmail(email);
 
-    private void updateProfile(
-            HttpServletRequest request,
-            HttpServletResponse response
-    ) {
+        session.setAttribute(
+                "user",
+                auth
+        );
 
-        String name
-                = request.getParameter("name");
+        response.sendRedirect(
+                request.getContextPath() + "/profile"
+        );
 
-        String phone
-                = request.getParameter("phone");
-
-        // gọi DAO update database
     }
 
     private void changePassword(
             HttpServletRequest request,
-            HttpServletResponse response
-    ) {
+            HttpServletResponse response)
+            throws IOException {
+
+        HttpSession session
+                = request.getSession();
+
+        Auth auth = (Auth) session.getAttribute("user");
+
+        if (auth == null) {
+
+            response.sendRedirect(
+                    request.getContextPath()
+                    + "/Auth?view=login"
+            );
+
+            return;
+
+        }
 
         String oldPass
                 = request.getParameter("oldPassword");
@@ -118,7 +188,42 @@ public class ProfileServlet extends HttpServlet {
         String newPass
                 = request.getParameter("newPassword");
 
-        // kiểm tra mật khẩu cũ
-        // update password
+        AdminProfileDAO dao
+                = new AdminProfileDAO();
+
+        boolean check
+                = dao.checkOldPassword(
+                        auth.getUserId(),
+                        oldPass
+                );
+
+        if (check) {
+            session.setAttribute(
+                    "message",
+                    "Change password successfully"
+            );
+
+            dao.changePassword(
+                    auth.getUserId(),
+                    newPass
+            );
+
+            response.sendRedirect(
+                    request.getContextPath() + "/profile"
+            );
+        } else {
+
+            session.setAttribute(
+                    "error",
+                    "Old password incorrect"
+            );
+
+            response.sendRedirect(
+                    request.getContextPath() + "/profile"
+            );
+
+        }
+
     }
+
 }

@@ -112,4 +112,59 @@ public class AdminProfileDAO extends DBContext {
 
     }
 
+    public boolean checkOldPassword(
+            int userId,
+            String oldPass
+    ) {
+
+        String sql
+                = "SELECT * FROM Users WHERE UserId=? AND Password=?";
+
+        try {
+
+            PreparedStatement ps
+                    = getConnection().prepareStatement(sql);
+
+            ps.setInt(1, userId);
+            ps.setString(2, oldPass);
+
+            ResultSet rs
+                    = ps.executeQuery();
+
+            return rs.next();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+        }
+
+        return false;
+    }
+
+    public void changePassword(
+            int userId,
+            String newPass
+    ) {
+
+        String sql
+                = "UPDATE Users SET Password=? WHERE UserId=?";
+
+        try {
+
+            PreparedStatement ps
+                    = getConnection().prepareStatement(sql);
+
+            ps.setString(1, newPass);
+            ps.setInt(2, userId);
+
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+        }
+
+    }
 }

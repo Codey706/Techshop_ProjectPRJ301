@@ -95,6 +95,7 @@
                       style="font-size: 9px; background-color: #0056b3 !important; padding: 3px 6px;">0</span>
             </a>
 
+<<<<<<< HEAD
             <%-- Nút đăng nhập trên Navbar--%>
             <c:choose>
 
@@ -186,6 +187,22 @@
                 </c:otherwise>
 
             </c:choose>
+=======
+            <%-- Nút đăng nhập trên Navbar --%>
+            <a href="${pageContext.request.contextPath}/Auth?view=login"
+               class="btn text-white px-3 py-2 d-inline-flex align-items-center gap-2" 
+               style="background-color: #0056b3; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 600;">
+
+                <div style="width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;">
+                    <img src="${pageContext.request.contextPath}/assets/images/login_icon.png" 
+                         alt="Login" 
+                         style="width: 100%; height: 100%; object-fit: contain;">
+                </div>
+
+                <span data-vi="Đăng nhập" data-en="Login">Đăng nhập</span>
+            </a>
+
+>>>>>>> 96ff4e3 (Update navbar and other changes)
         </div>
     </div>
 </nav>

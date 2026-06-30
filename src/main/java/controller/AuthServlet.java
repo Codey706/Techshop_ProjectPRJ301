@@ -159,6 +159,7 @@ public class AuthServlet extends HttpServlet {
                 if (user.getRoleId() == 1) {
                     response.sendRedirect(request.getContextPath() + "/admin/dashboard");
                 } else {
+                    // Nếu là khách hàng bình thường, đẩy về trang chủ mua sắm)
                     response.sendRedirect(request.getContextPath() + "/home");
                 }
 
