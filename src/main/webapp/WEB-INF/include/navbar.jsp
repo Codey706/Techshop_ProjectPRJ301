@@ -10,7 +10,7 @@
            style="color: #0056b3 !important;">
             <img src="${pageContext.request.contextPath}/assets/images/logo.png"
                  alt="Mirai Logo"
-                 style="height: 40px; width: auto;">
+                 style="height: 40px; width: auto; border-radius: 100%;">
             <span>
                 Mirai
                 <span class="text-secondary fw-normal fs-5">Store</span>
@@ -96,18 +96,96 @@
             </a>
 
             <%-- Nút đăng nhập trên Navbar--%>
-            <a href="${pageContext.request.contextPath}/Auth?lang=${not empty param.lang ? param.lang : (not empty sessionScope.lang ? sessionScope.lang : 'vi')}" 
-               class="btn text-white px-3 py-2 d-inline-flex align-items-center gap-2" 
-               style="background-color: #0056b3; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 600;">
+            <c:choose>
 
-                <div style="width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;">
-                    <img src="${pageContext.request.contextPath}/assets/images/login_icon.png" 
-                         alt="Login" 
-                         style="width: 100%; height: 100%; object-fit: contain;">
-                </div>
+                <%-- Đã đăng nhập --%>
+                <c:when test="${sessionScope.user != null}">
 
-                <span data-vi="Đăng nhập" data-en="Login">Đăng nhập</span>
-            </a>
+                    <div class="dropdown">
+
+                        <a href="#"
+                           class="btn text-white px-3 py-2 d-inline-flex align-items-center gap-2 dropdown-toggle"
+                           data-bs-toggle="dropdown"
+                           style="background-color:#0056b3;
+                           border-radius:8px;
+                           font-size:14px;
+                           font-weight:600;">
+
+                            <img src="${pageContext.request.contextPath}/assets/images/login_icon.png"
+                                 alt="Avatar"
+                                 style="width:28px;height:28px;border-radius:50%;object-fit:cover;">
+
+                            <span>${sessionScope.user.username}</span>
+
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-end shadow">
+
+                            <li class="dropdown-header">
+                                Welcome,
+                                <strong>${sessionScope.user.username}</strong>
+                            </li>
+
+                            <li><hr class="dropdown-divider"></li>
+
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-person me-2"></i>
+                                    My Profile
+                                </a>
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-bag me-2"></i>
+                                    My Orders
+                                </a>
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-heart me-2"></i>
+                                    Wishlist
+                                </a>
+                            </li>
+
+                            <li><hr class="dropdown-divider"></li>
+
+                            <li>
+                                <a class="dropdown-item text-danger"
+                                   href="${pageContext.request.contextPath}/Auth?view=logout">
+                                    <i class="bi bi-box-arrow-right me-2"></i>
+                                    Logout
+                                </a>
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                </c:when>
+
+                <%-- Chưa đăng nhập --%>
+                <c:otherwise>
+
+                    <a href="${pageContext.request.contextPath}/Auth?view=login&lang=${not empty param.lang ? param.lang : (not empty sessionScope.lang ? sessionScope.lang : 'vi')}"
+                       class="btn text-white px-3 py-2 d-inline-flex align-items-center gap-2"
+                       style="background-color:#0056b3;
+                       border-radius:8px;
+                       text-decoration:none;
+                       font-size:14px;
+                       font-weight:600;">
+
+                        <img src="${pageContext.request.contextPath}/assets/images/login_icon.png"
+                             style="width:18px;height:18px;">
+
+                        <span data-vi="Đăng nhập" data-en="Login">Đăng nhập</span>
+
+                    </a>
+
+                </c:otherwise>
+
+            </c:choose>
         </div>
     </div>
 </nav>
