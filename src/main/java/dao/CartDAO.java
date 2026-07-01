@@ -236,6 +236,19 @@ public class CartDAO extends DBContext {
     }
     // Helper
 
+    public int getDefaultVariantIdByProductId(int productId) {
+        String sql = "SELECT MIN(VariantId) AS VariantId FROM ProductVariants WHERE ProductId = ?";
+        try {
+            PreparedStatement ps = this.getConnection().prepareStatement(sql);
+            ps.setInt(1, productId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt("VariantId");
+        } catch (SQLException ex) {
+            Logger.getLogger(CartDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return -1;
+    }
+
     private void updateCartTimestamp(int cartId) {
         String sql = "UPDATE Cart SET UpdatedAt = GETDATE() WHERE CartId = ?";
         try {

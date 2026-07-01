@@ -21,31 +21,21 @@ public class CartServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession();
-Integer userId = 1; // test tạm
-session.setAttribute("userId", userId);
+        Integer userId = 1; // test tạm
+        session.setAttribute("userId", userId);
 
         CartDAO cartDAO = new CartDAO();
-
-        // lấy danh sách cart item đúng theo CartDAO
         List<CartItem> cartItems = cartDAO.getCartItems(userId);
-
-        // tính subtotal đúng theo CartDAO
         BigDecimal subtotal = cartDAO.calculateSubtotal(cartItems);
 
-        // voucher đang áp dụng
         Vouchers appliedVoucher = (Vouchers) session.getAttribute("appliedVoucher");
         BigDecimal discountAmount = (BigDecimal) session.getAttribute("discountAmount");
-        if (discountAmount == null) {
-            discountAmount = BigDecimal.ZERO;
-        }
+        if (discountAmount == null) discountAmount = BigDecimal.ZERO;
 
         BigDecimal total = subtotal.subtract(discountAmount);
-        if (total.compareTo(BigDecimal.ZERO) < 0) {
-            total = BigDecimal.ZERO;
-        }
+        if (total.compareTo(BigDecimal.ZERO) < 0) total = BigDecimal.ZERO;
 
         session.setAttribute("cartCount", cartDAO.countCartItems(userId));
-
         request.setAttribute("cartItems", cartItems);
         request.setAttribute("subtotal", subtotal);
         request.setAttribute("discountAmount", discountAmount);
@@ -60,54 +50,85 @@ session.setAttribute("userId", userId);
             throws ServletException, IOException {
 
         HttpSession session = request.getSession();
-Integer userId = 1; // test tạm
-session.setAttribute("userId", userId);
+        Integer userId = 1; // test tạm
+        session.setAttribute("userId", userId);
 
         CartDAO cartDAO = new CartDAO();
         String action = request.getParameter("action");
 
+        // Nếu không có action nhưng có productId => coi là "add"
         if (action == null || action.trim().isEmpty()) {
-            response.sendRedirect(request.getContextPath() + "/cart");
-            return;
+            if (request.getParameter("productId") != null) {
+                action = "add";
+            } else {
+                response.sendRedirect(request.getContextPath() + "/cart");
+                return;
+            }
         }
 
         try {
             if ("add".equals(action)) {
-                int variantId = Integer.parseInt(request.getParameter("variantId"));
-                int quantity = Integer.parseInt(request.getParameter("quantity"));
-
-                if (quantity < 1) {
-                    quantity = 1;
+                int variantId;
+                String variantIdParam = request.getParameter("variantId");
+                if (variantIdParam != null && !variantIdParam.trim().isEmpty()) {
+                    variantId = Integer.parseInt(variantIdParam);
+                } else {
+                    // Form chỉ gửi productId => tự tra variantId mặc định
+                    int productId = Integer.parseInt(request.getParameter("productId"));
+                    variantId = cartDAO.getDefaultVariantIdByProductId(productId);
                 }
 
-                // đúng tên hàm trong CartDAO
+                if (variantId <= 0) {
+                    response.sendRedirect(request.getContextPath() + "/cart");
+                    return;
+                }
+
+                String qtyParam = request.getParameter("quantity");
+                int quantity = (qtyParam != null && !qtyParam.trim().isEmpty())
+                        ? Integer.parseInt(qtyParam) : 1;
+                if (quantity < 1) quantity = 1;
+
                 cartDAO.addToCart(userId, variantId, quantity);
                 session.setAttribute("cartCount", cartDAO.countCartItems(userId));
-            }
 
-            else if ("update".equals(action)) {
-                int cartItemId = Integer.parseInt(request.getParameter("cartItemId"));
-                int quantity = Integer.parseInt(request.getParameter("quantity"));
+            } else if ("increase".equals(action)) {
+                int variantId = Integer.parseInt(request.getParameter("variantId"));
+                cartDAO.addToCart(userId, variantId, 1);
+                session.setAttribute("cartCount", cartDAO.countCartItems(userId));
 
-                if (quantity < 1) {
-                    // đúng tên hàm trong CartDAO
-                    cartDAO.removeItem(cartItemId, userId);
-                } else {
-                    // đúng tên hàm trong CartDAO
-                    cartDAO.updateQuantity(cartItemId, quantity, userId);
+            } else if ("decrease".equals(action)) {
+                int variantId = Integer.parseInt(request.getParameter("variantId"));
+                List<CartItem> items = cartDAO.getCartItems(userId);
+                for (CartItem ci : items) {
+                    if (ci.getVariantId() == variantId) {
+                        int newQty = ci.getQuantity() - 1;
+                        if (newQty <= 0) {
+                            cartDAO.removeItem(ci.getCartItemId(), userId);
+                        } else {
+                            cartDAO.updateQuantity(ci.getCartItemId(), newQty, userId);
+                        }
+                        break;
+                    }
                 }
-
                 session.removeAttribute("appliedVoucher");
                 session.removeAttribute("discountAmount");
                 session.setAttribute("cartCount", cartDAO.countCartItems(userId));
-            }
 
-            else if ("remove".equals(action)) {
+            } else if ("update".equals(action)) {
                 int cartItemId = Integer.parseInt(request.getParameter("cartItemId"));
+                int quantity = Integer.parseInt(request.getParameter("quantity"));
+                if (quantity < 1) {
+                    cartDAO.removeItem(cartItemId, userId);
+                } else {
+                    cartDAO.updateQuantity(cartItemId, quantity, userId);
+                }
+                session.removeAttribute("appliedVoucher");
+                session.removeAttribute("discountAmount");
+                session.setAttribute("cartCount", cartDAO.countCartItems(userId));
 
-                // đúng tên hàm trong CartDAO
+            } else if ("remove".equals(action)) {
+                int cartItemId = Integer.parseInt(request.getParameter("cartItemId"));
                 cartDAO.removeItem(cartItemId, userId);
-
                 session.removeAttribute("appliedVoucher");
                 session.removeAttribute("discountAmount");
                 session.setAttribute("cartCount", cartDAO.countCartItems(userId));
