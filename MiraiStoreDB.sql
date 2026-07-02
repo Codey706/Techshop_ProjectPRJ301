@@ -694,3 +694,19 @@ INSERT INTO [dbo].[Orders] ([UserId], [OrderDate], [Subtotal], [ShippingFee], [D
 VALUES 
 (2, '2026-05-20', 16000000, 30000, 0, 16030000, N'Khách hàng Boom Hàng', '0999999999', N'Trái Đất', 4);
 GO
+--add missing ProductVariants for products 2-7
+INSERT INTO [dbo].[ProductVariants] 
+    ([ProductId],[VariantSKU],[VariantName],[OriginalPrice],[Price],[DiscountPercent],[Stock],[ImageUrl],[Status])
+VALUES
+(2,'LOG-G213-STD',N'Bàn phím cơ Logitech G213 Tiêu chuẩn',2290000,1990000,13,30,'logitech-g213.png',N'Active'),
+(3,'APL-MACAIR-M3-8-256',N'MacBook Air M3 8GB 256GB Midnight',28990000,26990000,7,15,'macbook-air-m3-midnight.png',N'Active'),
+(3,'APL-MACAIR-M3-16-512',N'MacBook Air M3 16GB 512GB Starlight',34990000,32990000,6,10,'macbook-air-m3-starlight.png',N'Active'),
+(4,'APL-IP15PM-256-NAT',N'iPhone 15 Pro Max 256GB Titanium Natural',33990000,30990000,9,20,'iphone-15-pm-natural.png',N'Active'),
+(4,'APL-IP15PM-512-BLU',N'iPhone 15 Pro Max 512GB Blue Titanium',39990000,37990000,5,8,'iphone-15-pm-blue.png',N'Active'),
+(5,'LOG-MXKEYS-S-GRY',N'Logitech MX Keys S Graphite',2890000,2490000,14,25,'mxkeys-s-graphite.png',N'Active'),
+(5,'LOG-MXKEYS-S-WHT',N'Logitech MX Keys S Pale Grey',2890000,2490000,14,20,'mxkeys-s-white.png',N'Active'),
+(6,'LOG-SUPLT2-WHT',N'Logitech G Pro X Superlight 2 Trắng',4290000,3790000,12,18,'superlight2-white.png',N'Active'),
+(6,'LOG-SUPLT2-BLK',N'Logitech G Pro X Superlight 2 Đen',4290000,3790000,12,15,'superlight2-black.png',N'Active'),
+(7,'SAM-S26U-256-BLK',N'Samsung Galaxy S26 Ultra 256GB Đen',34990000,31990000,8,20,'s26-ultra-black.png',N'Active'),
+(7,'SAM-S26U-512-GRN',N'Samsung Galaxy S26 Ultra 512GB Xanh',40990000,37990000,7,10,'s26-ultra-green.png',N'Active');
+GO
