@@ -95,7 +95,6 @@
                       style="font-size: 9px; background-color: #0056b3 !important; padding: 3px 6px;">0</span>
             </a>
 
-<<<<<<< HEAD
             <%-- Nút đăng nhập trên Navbar--%>
             <c:choose>
 
@@ -103,24 +102,20 @@
                 <c:when test="${sessionScope.user != null}">
 
                     <div class="dropdown">
-
                         <a href="#"
-                           class="btn text-white px-3 py-2 d-inline-flex align-items-center gap-2 dropdown-toggle"
+                           class="btn btn-primary dropdown-toggle d-flex align-items-center px-3 py-2"
                            data-bs-toggle="dropdown"
-                           style="background-color:#0056b3;
-                           border-radius:8px;
-                           font-size:14px;
-                           font-weight:600;">
+                           style="border-radius:10px; font-weight:600;">
 
                             <img src="${pageContext.request.contextPath}/assets/images/login_icon.png"
                                  alt="Avatar"
-                                 style="width:28px;height:28px;border-radius:50%;object-fit:cover;">
+                                 style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
 
-                            <span>${sessionScope.user.username}</span>
+                            <span class="ms-2">${sessionScope.user.username}</span>
 
                         </a>
 
-                        <ul class="dropdown-menu dropdown-menu-end shadow">
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4 mt-2">
 
                             <li class="dropdown-header">
                                 Welcome,
@@ -130,23 +125,16 @@
                             <li><hr class="dropdown-divider"></li>
 
                             <li>
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="${pageContext.request.contextPath}/profile">
                                     <i class="bi bi-person me-2"></i>
                                     My Profile
                                 </a>
                             </li>
 
                             <li>
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="${pageContext.request.contextPath}/order">
                                     <i class="bi bi-bag me-2"></i>
                                     My Orders
-                                </a>
-                            </li>
-
-                            <li>
-                                <a class="dropdown-item" href="#">
-                                    <i class="bi bi-heart me-2"></i>
-                                    Wishlist
                                 </a>
                             </li>
 
@@ -170,39 +158,26 @@
                 <c:otherwise>
 
                     <a href="${pageContext.request.contextPath}/Auth?view=login&lang=${not empty param.lang ? param.lang : (not empty sessionScope.lang ? sessionScope.lang : 'vi')}"
-                       class="btn text-white px-3 py-2 d-inline-flex align-items-center gap-2"
-                       style="background-color:#0056b3;
-                       border-radius:8px;
-                       text-decoration:none;
-                       font-size:14px;
-                       font-weight:600;">
+                       class="btn btn-primary d-flex align-items-center px-3 py-2"
+                       style="border-radius:10px; font-weight:600;">
 
                         <img src="${pageContext.request.contextPath}/assets/images/login_icon.png"
-                             style="width:18px;height:18px;">
+                             alt="Login"
+                             style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
 
-                        <span data-vi="Đăng nhập" data-en="Login">Đăng nhập</span>
+                        <span class="ms-2"
+                              data-vi="Đăng nhập"
+                              data-en="Login">
+                            Đăng nhập
+                        </span>
 
                     </a>
 
                 </c:otherwise>
 
             </c:choose>
-=======
-            <%-- Nút đăng nhập trên Navbar --%>
-            <a href="${pageContext.request.contextPath}/Auth?view=login"
-               class="btn text-white px-3 py-2 d-inline-flex align-items-center gap-2" 
-               style="background-color: #0056b3; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 600;">
 
-                <div style="width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;">
-                    <img src="${pageContext.request.contextPath}/assets/images/login_icon.png" 
-                         alt="Login" 
-                         style="width: 100%; height: 100%; object-fit: contain;">
-                </div>
 
-                <span data-vi="Đăng nhập" data-en="Login">Đăng nhập</span>
-            </a>
-
->>>>>>> 96ff4e3 (Update navbar and other changes)
         </div>
     </div>
 </nav>
