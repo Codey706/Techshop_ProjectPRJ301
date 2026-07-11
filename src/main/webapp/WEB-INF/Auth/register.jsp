@@ -51,6 +51,7 @@
                         <input type="text"
                                class="form-control"
                                name="username"
+                               value="${oldUsername}"
                                placeholder="Username"
                                required>
                     </div>
@@ -61,6 +62,7 @@
                         <input type="email"
                                class="form-control"
                                name="email"
+                               value="${oldEmail}"
                                placeholder="Email Address"
                                required>
                     </div>

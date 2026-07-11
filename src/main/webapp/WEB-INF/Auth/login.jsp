@@ -58,6 +58,7 @@
                         <input type="text"
                                class="form-control"
                                name="username"
+                               value="${oldUsername}"
                                placeholder="Username"
                                required>
                     </div>
