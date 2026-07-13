@@ -16,7 +16,7 @@ import model.Auth;
  *
  * @author Huynh Nhu Y
  */
-@WebServlet(name = "DashboardServlet", urlPatterns = {"/admin/dashboard", "/admin/dashboard/*"})
+@WebServlet(name = "DashboardServlet", urlPatterns = {"/admin/dashboard/dashboard", "/admin/dashboard/dashboard/*"})
 public class DashboardServlet extends HttpServlet {
 
     @Override
@@ -50,7 +50,7 @@ public class DashboardServlet extends HttpServlet {
             request.setAttribute("totalRevenue", totalRevenue);
             request.setAttribute("totalCustomers", totalCustomers);
 
-            request.getRequestDispatcher("/WEB-INF/admin/dashboard.jsp")
+            request.getRequestDispatcher("/WEB-INF/admin/dashboard/dashboard.jsp")
                     .forward(request, response);
 
         } else if (pathInfo.equals("/revenue")) {
@@ -73,7 +73,7 @@ public class DashboardServlet extends HttpServlet {
             request.setAttribute("revenueList", revenueList);
             request.setAttribute("selectedYear", year);
 
-            request.getRequestDispatcher("/WEB-INF/admin/revenue.jsp")
+            request.getRequestDispatcher("/WEB-INF/admin/dashboard/revenue.jsp")
                     .forward(request, response);
 
         } else if (pathInfo.equals("/top-products")) {
@@ -84,7 +84,7 @@ public class DashboardServlet extends HttpServlet {
             // Gửi danh sách ranking sang trang top-products.jsp
             request.setAttribute("topProducts", topProducts);
 
-            request.getRequestDispatcher("/WEB-INF/admin/top-products.jsp")
+            request.getRequestDispatcher("/WEB-INF/admin/dashboard/top-products.jsp")
                     .forward(request, response);
         } else {
             // Nếu người dùng gõ đường dẫn lạ (Ví dụ: /admin/dashboard/abc) -> Báo lỗi 404

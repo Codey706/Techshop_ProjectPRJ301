@@ -367,7 +367,7 @@ public class AuthServlet extends HttpServlet {
 
                 response.sendRedirect(
                         request.getContextPath()
-                        + "/admin/dashboard"
+                        + "/admin/dashboard/dashboard"
                 );
 
             } else {

@@ -10,5 +10,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/home.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/header.css">
 </head>
 <body class="bg-light text-dark d-flex flex-column min-vh-screen">
