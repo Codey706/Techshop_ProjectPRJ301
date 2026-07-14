@@ -20,8 +20,10 @@
     <body>
 
         <div class="mirai-header">
-            <img src="${pageContext.request.contextPath}/assets/images/logo.png" alt="Mirai Store">
-            <span>Mirai <span style="font-weight: 400; color: #6c757d;">Store</span></span>
+            <a herf="${pageContext.request.contextPath}/home">
+                <img src="${pageContext.request.contextPath}/assets/images/logo.png" alt="Mirai Store">
+                <span>Mirai <span style="font-weight: 400; color: #6c757d;">Store</span></span>
+            </a>
         </div>
 
         <div class="d-flex justify-content-center align-items-center flex-grow-1 my-3">
@@ -98,7 +100,7 @@
         </div>
 
         <div class="mirai-footer">
-            &copy; 2026 <a href="#">Mirai Store</a>. All rights reserved.
+            &copy; 2026 <a href="${pageContext.request.contextPath}/home">Mirai Store</a>. All rights reserved.
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

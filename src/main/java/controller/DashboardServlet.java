@@ -16,7 +16,7 @@ import model.Auth;
  *
  * @author Huynh Nhu Y
  */
-@WebServlet(name = "DashboardServlet", urlPatterns = {"/admin/dashboard/dashboard", "/admin/dashboard/dashboard/*"})
+@WebServlet(name = "DashboardServlet", urlPatterns = {"/admin/dashboard", "/admin/dashboard/*", "/admin/dashboard/dashboard", "/admin/dashboard/dashboard/*"})
 public class DashboardServlet extends HttpServlet {
 
     @Override
@@ -69,9 +69,33 @@ public class DashboardServlet extends HttpServlet {
             // Lấy danh sách doanh thu theo từng tháng từ database
             List<Map<String, Object>> revenueList = dashboardDAO.getRevenueByYear(year);
 
+            // Tính số liệu tổng hợp để hiển thị ở các thẻ thống kê
+            int completedOrders = 0;
+            double yearlyRevenue = 0;
+            int bestMonth = 0;
+            double bestMonthRevenue = 0;
+
+            for (Map<String, Object> item : revenueList) {
+                int orders = ((Number) item.get("totalOrders")).intValue();
+                double revenue = ((Number) item.get("revenue")).doubleValue();
+                int month = ((Number) item.get("month")).intValue();
+
+                completedOrders += orders;
+                yearlyRevenue += revenue;
+
+                if (revenue > bestMonthRevenue) {
+                    bestMonthRevenue = revenue;
+                    bestMonth = month;
+                }
+            }
+
             // Gửi dữ liệu và năm đang lọc sang trang revenue.jsp
             request.setAttribute("revenueList", revenueList);
             request.setAttribute("selectedYear", year);
+            request.setAttribute("completedOrders", completedOrders);
+            request.setAttribute("yearlyRevenue", yearlyRevenue);
+            request.setAttribute("bestMonth", bestMonth);
+            request.setAttribute("bestMonthRevenue", bestMonthRevenue);
 
             request.getRequestDispatcher("/WEB-INF/admin/dashboard/revenue.jsp")
                     .forward(request, response);
@@ -81,8 +105,15 @@ public class DashboardServlet extends HttpServlet {
             // Lấy Top 10 sản phẩm có số lượng [Sold] cao nhất
             List<Map<String, Object>> topProducts = dashboardDAO.getTopSellingProducts(10);
 
+            // Tính tổng số lượng đã bán của các sản phẩm trong bảng xếp hạng
+            int totalSold = 0;
+            for (Map<String, Object> item : topProducts) {
+                totalSold += ((Number) item.get("sold")).intValue();
+            }
+
             // Gửi danh sách ranking sang trang top-products.jsp
             request.setAttribute("topProducts", topProducts);
+            request.setAttribute("totalSold", totalSold);
 
             request.getRequestDispatcher("/WEB-INF/admin/dashboard/top-products.jsp")
                     .forward(request, response);

@@ -61,8 +61,16 @@
                             <c:when test="${sessionScope.user != null}">
                                 <a href="${pageContext.request.contextPath}/cart"
                                    class="navbar-action text-decoration-none d-flex align-items-center gap-2">
-                                    <img src="${pageContext.request.contextPath}/assets/images/cart-icon.png"
-                                         alt="Giỏ hàng" class="cart-image">
+                                    <span class="position-relative d-inline-flex">
+                                        <img src="${pageContext.request.contextPath}/assets/images/cart-icon.png"
+                                             alt="Giỏ hàng" class="cart-image">
+                                        <c:if test="${sessionScope.cartCount > 0}">
+                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                                ${sessionScope.cartCount}
+                                                <span class="visually-hidden">sản phẩm trong giỏ hàng</span>
+                                            </span>
+                                        </c:if>
+                                    </span>
                                     <span class="d-none d-lg-inline">Giỏ hàng</span>
                                 </a>
                             </c:when>
@@ -91,9 +99,15 @@
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0">
                                 <li><a class="dropdown-item" href="${pageContext.request.contextPath}/profile">Hồ sơ</a></li>
-                                <li><a class="dropdown-item" href="${pageContext.request.contextPath}/order">Đơn hàng</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item text-danger" href="${pageContext.request.contextPath}/Auth?view=logout">Đăng xuất</a></li>
+                                    <c:if test="${sessionScope.user.roleId != 1}">
+                                    <li><a class="dropdown-item" href="${pageContext.request.contextPath}/order">Đơn hàng</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    </c:if>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="${pageContext.request.contextPath}/Auth?view=logout">
+                                        <i class="fa-solid fa-right-from-bracket me-2"></i>Đăng xuất
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </c:when>

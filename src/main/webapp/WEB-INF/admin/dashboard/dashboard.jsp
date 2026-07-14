@@ -17,13 +17,13 @@
         <header class="admin-header sticky-top">
             <div class="container-fluid px-3 py-2">
                 <div class="admin-navbar d-flex align-items-center gap-3">
-                    <a href="${pageContext.request.contextPath}/admin/dashboard/dashboard"
+                    <a href="${pageContext.request.contextPath}/admin/dashboard"
                        class="admin-brand d-flex align-items-center text-decoration-none flex-shrink-0">
                         <img src="${pageContext.request.contextPath}/assets/images/logo.png" alt="Mirai Store">
                         <span><strong>Mirai</strong> Store <span class="d-none d-xl-inline">- Admin</span></span>
                     </a>
 
-                    <form action="${pageContext.request.contextPath}/admin/dashboard/dashboard"
+                    <form action="${pageContext.request.contextPath}/admin/dashboard"
                           method="get" class="admin-search d-none d-md-flex flex-grow-1">
                         <div class="input-group">
                             <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
@@ -71,7 +71,7 @@
                 <aside class="col-12 col-lg-2">
                     <div class="admin-sidebar h-100 d-flex flex-column">
                         <nav class="nav flex-column gap-2">
-                            <a class="nav-link active" href="${pageContext.request.contextPath}/admin/dashboard/dashboard">
+                            <a class="nav-link active" href="${pageContext.request.contextPath}/admin/dashboard">
                                 <i class="bi bi-house-door-fill"></i><span>Tổng quan</span>
                             </a>
                             <a class="nav-link" href="${pageContext.request.contextPath}/admin/order">
@@ -83,7 +83,7 @@
                             <a class="nav-link" href="${pageContext.request.contextPath}/admin/voucher">
                                 <i class="bi bi-ticket-perforated"></i><span>Khuyến mãi</span>
                             </a>
-                            <a class="nav-link" href="${pageContext.request.contextPath}/admin/dashboard/dashboard/revenue">
+                            <a class="nav-link" href="${pageContext.request.contextPath}/admin/dashboard/revenue">
                                 <i class="bi bi-bar-chart"></i><span>Báo cáo</span>
                             </a>
                         </nav>
@@ -197,11 +197,11 @@
 
                                 <p class="text-secondary text-center">Xem dữ liệu doanh thu và bảng xếp hạng sản phẩm bán chạy.</p>
 
-                                <a class="report-link" href="${pageContext.request.contextPath}/admin/dashboard/dashboard/revenue">
+                                <a class="report-link" href="${pageContext.request.contextPath}/admin/dashboard/revenue">
                                     <span><i class="bi bi-bar-chart-line me-3"></i><strong>Doanh thu</strong></span>
                                     <i class="bi bi-chevron-right"></i>
                                 </a>
-                                <a class="report-link" href="${pageContext.request.contextPath}/admin/dashboard/dashboard/top-products">
+                                <a class="report-link" href="${pageContext.request.contextPath}/admin/dashboard/top-products">
                                     <span><i class="bi bi-trophy me-3"></i><strong>Sản phẩm bán chạy</strong></span>
                                     <i class="bi bi-chevron-right"></i>
                                 </a>
@@ -209,7 +209,9 @@
                         </div>
                     </div>
 
-                    <footer class="admin-footer mt-4 text-center">© 2026 Mirai Store - Trang quản trị</footer>
+                    <footer class="admin-footer mt-4 text-center">
+                        &copy; 2026 <a href="${pageContext.request.contextPath}/home">Mirai Store</a> - Trang quản trị
+                    </footer>
                 </main>
             </div>
         </div>
