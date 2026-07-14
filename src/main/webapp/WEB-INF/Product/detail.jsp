@@ -32,7 +32,7 @@
         <span class="badge mb-2 px-3 py-2" style="background-color: #0056b3;">Mã SKU: ${product.baseSKU}</span>
         <h2 class="fw-bold text-dark mb-3">${product.productName}</h2>
         <h3 class="fw-bold mb-4" style="color: #0056b3;">
-            <fmt:formatNumber value="24990000" type="currency" currencySymbol="đ" maxFractionDigits="0"/>
+            <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="đ" maxFractionDigits="0"/>
         </h3>
         <div class="d-flex gap-4 mb-4 text-muted small">
             <span><i class="fa-solid fa-eye me-1"></i> Lượt xem: <strong>${product.views}</strong></span>
@@ -71,8 +71,8 @@
                 <div class="p-3">
                     <div class="bg-light rounded-3 d-flex align-items-center justify-content-center" style="height: 160px;">
                         <c:choose>
-                            <c:when test="${not empty p.image}">
-                                <img src="${pageContext.request.contextPath}/assets/images/${p.image}" class="img-fluid h-100 object-fit-contain" alt="${p.productName}">
+                            <c:when test="${not empty p.imageUrl}">
+                                <img src="${pageContext.request.contextPath}/assets/images/products/${p.imageUrl}" class="img-fluid h-100 object-fit-contain" alt="${p.productName}">
                             </c:when>
                             <c:otherwise>
                                 <i class="fa-solid fa-laptop fs-1 opacity-50" style="color: #0056b3;"></i>
@@ -86,7 +86,7 @@
                 </div>
                 <div class="card-footer bg-light border-0 d-flex align-items-center justify-content-between p-3">
                     <span class="fw-bold fs-6" style="color: #0056b3;">
-                        <fmt:formatNumber value="24990000" type="currency" currencySymbol="đ" maxFractionDigits="0"/>
+                        <fmt:formatNumber value="${p.price}" type="currency" currencySymbol="đ" maxFractionDigits="0"/>
                     </span>
                     <a href="${pageContext.request.contextPath}/product/detail?id=${p.productId}&page=${currentPage}" class="btn btn-sm text-white px-3" style="background-color: #0056b3;">Xem chi tiết</a>
                 </div>

@@ -13,17 +13,35 @@ import model.Categories;
 public class ProductDAO {
 
     // =================================================================
+    // GHI CHÚ QUAN TRỌNG:
+    // Bảng [Products] KHÔNG có cột Price/ImageUrl (2 cột này nằm ở
+    // bảng [ProductVariants]). Mọi câu SELECT bên dưới đều phải JOIN/
+    // OUTER APPLY sang ProductVariants để lấy "giá khởi điểm" (biến thể
+    // Active có giá thấp nhất) và ảnh đại diện cho sản phẩm.
+    // =================================================================
+    private static final String VARIANT_JOIN =
+              " OUTER APPLY ("
+            + "     SELECT TOP 1 pv.Price, pv.ImageUrl "
+            + "     FROM ProductVariants pv "
+            + "     WHERE pv.ProductId = p.ProductId AND pv.Status = N'Active' "
+            + "     ORDER BY pv.Price ASC"
+            + " ) vv";
+
+    // =================================================================
     // BỔ SUNG: CÁC HÀM PHỤC VỤ TRANG CHỦ (HOME) & GỢI Ý CHO BẠN
     // =================================================================
-    
+
     /**
      * Lấy danh sách sản phẩm nổi bật hiển thị lên trang chủ (Mặc định lấy TOP 4)
      */
     public List<Products> getFeaturedProducts() {
         List<Products> list = new ArrayList<>();
-        String query = "SELECT TOP 4 * FROM Products WHERE IsFeatured = 1 AND Deleted = 0 ORDER BY ProductId DESC";
-        try (Connection conn = new DBContext().getConnection(); 
-             PreparedStatement ps = conn.prepareStatement(query); 
+        String query = "SELECT TOP 4 p.*, vv.Price, vv.ImageUrl "
+                + "FROM Products p" + VARIANT_JOIN + " "
+                + "WHERE p.IsFeatured = 1 AND p.Deleted = 0 "
+                + "ORDER BY p.ProductId DESC";
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(query);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 list.add(mapResultSetToProduct(rs));
@@ -36,13 +54,14 @@ public class ProductDAO {
 
     /**
      * Lấy danh sách sản phẩm bán chạy nhất theo số lượng đã bán (Mặc định lấy TOP 12)
-     * @return 
+     * @return
      */
     public List<Products> getBestSellers() {
         List<Products> list = new ArrayList<>();
-        String query = "SELECT TOP 12 p.*, v.Price, v.ImageUrl "
-                + "FROM Products p "
-                + "LEFT JOIN ProductVariants v ON p.ProductId = v.ProductId "
+        // Dùng OUTER APPLY thay vì LEFT JOIN trực tiếp để tránh nhân bản dòng
+        // khi 1 sản phẩm có nhiều biến thể (LEFT JOIN cũ trả về 1 dòng/biến thể).
+        String query = "SELECT TOP 12 p.*, vv.Price, vv.ImageUrl "
+                + "FROM Products p" + VARIANT_JOIN + " "
                 + "WHERE p.Deleted = 0 "
                 + "ORDER BY p.Sold DESC";
 
@@ -50,7 +69,7 @@ public class ProductDAO {
             if (conn == null) {
                 return list;
             }
-            try (PreparedStatement ps = conn.prepareStatement(query); 
+            try (PreparedStatement ps = conn.prepareStatement(query);
                  ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     list.add(mapResultSetToProduct(rs));
@@ -64,12 +83,12 @@ public class ProductDAO {
 
     /**
      * Lấy danh sách các danh mục hiển thị trên thanh tab gợi ý (Active & Chưa xóa)
-     * @return 
+     * @return
      */
     public List<Categories> getSuggestionCategories() {
         List<Categories> list = new ArrayList<>();
         String sql = "SELECT CategoryId, CategoryName FROM Categories WHERE Deleted = 0";
-        
+
         try (Connection conn = new DBContext().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -87,7 +106,7 @@ public class ProductDAO {
 
     /**
      * Lấy danh sách sản phẩm mới nhất theo CategoryId (Giới hạn TOP 10 phần tử để tối ưu giao diện)
-     * @return 
+     * @return
      */
     public List<Products> getProductsByCategoryId(int categoryId) {
         List<Products> list = new ArrayList<>();
@@ -122,13 +141,16 @@ public class ProductDAO {
     // =================================================================
     // CÁC HÀM XỬ LÝ DỮ LIỆU KHÁC
     // =================================================================
-    
+
     // 1. Hàm lấy danh sách TẤT CẢ sản phẩm
     public List<Products> getAllProducts() {
         List<Products> list = new ArrayList<>();
-        String query = "SELECT * FROM Products WHERE Deleted = 0 ORDER BY ProductId DESC";
-        try (Connection conn = new DBContext().getConnection(); 
-             PreparedStatement ps = conn.prepareStatement(query); 
+        String query = "SELECT p.*, vv.Price, vv.ImageUrl "
+                + "FROM Products p" + VARIANT_JOIN + " "
+                + "WHERE p.Deleted = 0 "
+                + "ORDER BY p.ProductId DESC";
+        try (Connection conn = new DBContext().getConnection();
+             PreparedStatement ps = conn.prepareStatement(query);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 list.add(mapResultSetToProduct(rs));
@@ -142,8 +164,11 @@ public class ProductDAO {
     // 2. Hàm TÌM KIẾM sản phẩm theo từ khóa (khớp tên hoặc SKU)
     public List<Products> searchProducts(String keyword) {
         List<Products> list = new ArrayList<>();
-        String query = "SELECT * FROM Products WHERE Deleted = 0 AND (ProductName LIKE ? OR BaseSKU LIKE ?) ORDER BY ProductId DESC";
-        try (Connection conn = new DBContext().getConnection(); 
+        String query = "SELECT p.*, vv.Price, vv.ImageUrl "
+                + "FROM Products p" + VARIANT_JOIN + " "
+                + "WHERE p.Deleted = 0 AND (p.ProductName LIKE ? OR p.BaseSKU LIKE ?) "
+                + "ORDER BY p.ProductId DESC";
+        try (Connection conn = new DBContext().getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, "%" + keyword + "%");
             ps.setString(2, "%" + keyword + "%");
@@ -161,24 +186,28 @@ public class ProductDAO {
     // 3. Hàm LỌC sản phẩm theo Brand và Khoảng giá
     public List<Products> filterProducts(String brandId, String priceRange) {
         List<Products> list = new ArrayList<>();
-        StringBuilder query = new StringBuilder("SELECT * FROM Products WHERE Deleted = 0");
+        StringBuilder query = new StringBuilder(
+                "SELECT p.*, vv.Price, vv.ImageUrl FROM Products p" + VARIANT_JOIN
+                + " WHERE p.Deleted = 0");
 
         if (brandId != null && !brandId.isEmpty()) {
-            query.append(" AND BrandId = ?");
+            query.append(" AND p.BrandId = ?");
         }
 
+        // Lọc theo giá phải dựa trên giá của BIẾN THỂ (vv.Price), vì Products
+        // không có cột Price.
         if (priceRange != null && !priceRange.isEmpty()) {
             if (priceRange.equals("under-15m")) {
-                query.append(" AND Price < 15000000");
+                query.append(" AND vv.Price < 15000000");
             } else if (priceRange.equals("15m-25m")) {
-                query.append(" AND Price BETWEEN 15000000 AND 25000000");
+                query.append(" AND vv.Price BETWEEN 15000000 AND 25000000");
             } else if (priceRange.equals("over-25m")) {
-                query.append(" AND Price > 25000000");
+                query.append(" AND vv.Price > 25000000");
             }
         }
-        query.append(" ORDER BY ProductId DESC");
+        query.append(" ORDER BY p.ProductId DESC");
 
-        try (Connection conn = new DBContext().getConnection(); 
+        try (Connection conn = new DBContext().getConnection();
              PreparedStatement ps = conn.prepareStatement(query.toString())) {
 
             int paramIndex = 1;
@@ -199,8 +228,10 @@ public class ProductDAO {
 
     // 4. Hàm lấy CHI TIẾT 1 sản phẩm theo ID
     public Products getProductById(int id) {
-        String query = "SELECT * FROM Products WHERE ProductId = ? AND Deleted = 0";
-        try (Connection conn = new DBContext().getConnection(); 
+        String query = "SELECT p.*, vv.Price, vv.ImageUrl "
+                + "FROM Products p" + VARIANT_JOIN + " "
+                + "WHERE p.ProductId = ? AND p.Deleted = 0";
+        try (Connection conn = new DBContext().getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
@@ -232,6 +263,7 @@ public class ProductDAO {
         p.setDeleted(rs.getBoolean("Deleted"));
         p.setStatus(rs.getInt("Status"));
         p.setDescription(rs.getString("Description"));
+        // Price/ImageUrl giờ lấy từ ProductVariants (join vv), không phải từ Products nữa.
         p.setPrice(rs.getDouble("Price"));
         p.setImageUrl(rs.getString("ImageUrl"));
         p.setCreatedBy(rs.getInt("CreatedBy"));
