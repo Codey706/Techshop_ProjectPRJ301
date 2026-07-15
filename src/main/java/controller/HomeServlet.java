@@ -40,22 +40,19 @@ public class HomeServlet extends HttpServlet {
             }
         }
 
+        // 3. Logic lấy Sản phẩm nổi bật
+        List<Products> featuredProducts = productDAO.getFeaturedProducts();
+
         // Đẩy dữ liệu sang file JSP
         request.setAttribute("categoryList", categoryList);
         request.setAttribute("productsMap", productsMap);
-
-        // Chuyển hướng tới trang home.jsp
-        request.getRequestDispatcher("/WEB-INF/Home/home.jsp").forward(request, response);
-
-        ProductDAO productDAO = new ProductDAO();
-
-        List<Products> featuredProducts = productDAO.getFeaturedProducts();
-
         request.setAttribute("featuredProducts", featuredProducts);
 
-        request.getRequestDispatcher("/WEB-INF/Home/home.jsp")
-                .forward(request, response);
-
+        // Chỉ forward MỘT LẦN DUY NHẤT sau khi đã chuẩn bị xong toàn bộ dữ liệu.
+        // (Trước đây code forward() 2 lần trong cùng 1 request -> response đã
+        // commit ở lần forward đầu -> lần forward thứ 2 ném IllegalStateException
+        // và trang chủ không tải được.)
+        request.getRequestDispatcher("/WEB-INF/Home/home.jsp").forward(request, response);
     }
 
     @Override

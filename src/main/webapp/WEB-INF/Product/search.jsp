@@ -42,8 +42,8 @@
                                 <div class="p-3">
                                     <div class="bg-light rounded-3 d-flex align-items-center justify-content-center product-img-wrapper">
                                         <c:choose>
-                                            <c:when test="${not empty p.image}">
-                                                <img src="${pageContext.request.contextPath}/assets/images/${p.image}" class="img-fluid h-100 object-fit-contain" alt="${p.productName}">
+                                            <c:when test="${not empty p.imageUrl}">
+                                                <img src="${pageContext.request.contextPath}/assets/images/products/${p.imageUrl}" class="img-fluid h-100 object-fit-contain" alt="${p.productName}">
                                             </c:when>
                                             <c:otherwise>
                                                 <i class="fa-solid fa-laptop fs-1 opacity-25" style="color: #0056b3;"></i>

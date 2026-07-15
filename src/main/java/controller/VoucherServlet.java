@@ -13,14 +13,33 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import model.CartItem;
+import model.Vouchers;
 
-@WebServlet(name = "VoucherServlet", urlPatterns = {"/voucher"})
+@WebServlet(name = "VoucherServlet", urlPatterns = {"/voucher", "/voucher/*"})
 public class VoucherServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.sendRedirect(request.getContextPath() + "/cart");
+
+        HttpSession session = request.getSession();
+        Integer userId = 1; // test tạm
+        session.setAttribute("userId", userId);
+
+        CartDAO cartDAO = new CartDAO();
+        VoucherDAO voucherDAO = new VoucherDAO();
+
+        List<CartItem> cartItems = cartDAO.getCartItems(userId);
+        BigDecimal subtotal = cartDAO.calculateSubtotal(cartItems);
+
+        List<Vouchers> vouchers = voucherDAO.getAvailableVouchers();
+        Vouchers appliedVoucher = (Vouchers) session.getAttribute("appliedVoucher");
+
+        request.setAttribute("vouchers", vouchers);
+        request.setAttribute("subtotal", subtotal);
+        request.setAttribute("appliedVoucher", appliedVoucher);
+
+        request.getRequestDispatcher("/WEB-INF/Voucher/Voucher.jsp").forward(request, response);
     }
 
     @Override
@@ -31,7 +50,16 @@ public class VoucherServlet extends HttpServlet {
         Integer userId = 1; // test tạm
         session.setAttribute("userId", userId);
 
+        // Voucher.jsp gửi request tới /voucher/apply hoặc /voucher/remove
+        String pathInfo = request.getPathInfo(); // "/apply", "/remove" hoặc null
         String action = request.getParameter("action");
+        if (action == null || action.trim().isEmpty()) {
+            if (pathInfo != null && pathInfo.contains("apply")) {
+                action = "apply";
+            } else if (pathInfo != null && pathInfo.contains("remove")) {
+                action = "remove";
+            }
+        }
 
         if (action == null || action.trim().isEmpty()) {
             response.sendRedirect(request.getContextPath() + "/cart");
@@ -40,12 +68,16 @@ public class VoucherServlet extends HttpServlet {
 
         try {
             if ("apply".equals(action)) {
-                String code = request.getParameter("code");
+                // Voucher.jsp gửi tham số tên "voucherCode"
+                String code = request.getParameter("voucherCode");
+                if (code == null || code.trim().isEmpty()) {
+                    code = request.getParameter("code");
+                }
 
                 if (code == null || code.trim().isEmpty()) {
                     session.setAttribute("voucherError", "Vui lòng nhập mã giảm giá.");
                     session.removeAttribute("voucherSuccess");
-                    response.sendRedirect(request.getContextPath() + "/cart");
+                    response.sendRedirect(request.getContextPath() + "/voucher");
                     return;
                 }
 

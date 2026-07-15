@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.util.*" %>
 <%@ page import="model.CartItem" %>
+<%@ page import="model.Vouchers" %>
 <%@ page import="java.math.BigDecimal" %>
 <%@ page import="java.text.NumberFormat" %>
 <%@include file="/WEB-INF/include/header.jsp" %>
@@ -9,7 +10,7 @@
     BigDecimal subtotal       = (BigDecimal) request.getAttribute("subtotal");
     BigDecimal discountAmount = (BigDecimal) request.getAttribute("discountAmount");
     BigDecimal total          = (BigDecimal) request.getAttribute("total");
-    String appliedVoucher     = (String) request.getAttribute("appliedVoucher");
+    Vouchers appliedVoucher   = (Vouchers) request.getAttribute("appliedVoucher");
 
     if (subtotal       == null) subtotal       = BigDecimal.ZERO;
     if (discountAmount == null) discountAmount = BigDecimal.ZERO;
@@ -68,7 +69,7 @@
     <i class="fa-solid fa-cart-xmark fa-4x text-secondary mb-3"></i>
     <p class="fw-semibold fs-5 mb-1">Giỏ hàng của bạn đang trống</p>
     <p class="text-muted mb-4">Hãy thêm sản phẩm vào giỏ hàng nhé!</p>
-    <a href="${pageContext.request.contextPath}/" class="btn btn-buy text-white px-5 py-2">Tiếp tục mua sắm</a>
+    <a href="${pageContext.request.contextPath}/home" class="btn btn-buy text-white px-5 py-2">Tiếp tục mua sắm</a>
 </div>
 
 <%-- ── HAS ITEMS ── --%>
@@ -147,8 +148,8 @@
 
             <div class="col-md-1 col-6 text-center mt-2 mt-md-0">
                 <form action="${pageContext.request.contextPath}/cart" method="POST">
-                    <input type="hidden" name="action"    value="remove">
-                    <input type="hidden" name="variantId" value="<%= item.getVariantId() %>">
+                    <input type="hidden" name="action"     value="remove">
+                    <input type="hidden" name="cartItemId" value="<%= item.getCartItemId() %>">
                     <button type="submit" class="btn btn-link text-danger p-0 small">Xóa</button>
                 </form>
             </div>
@@ -160,10 +161,10 @@
     <div class="voucher-bar px-3 py-2 d-flex align-items-center gap-2 small">
         <i class="fa-solid fa-ticket" style="color:#4fc3f7"></i>
         <span class="text-muted">Voucher của Shop</span>
-        <% if (appliedVoucher != null && !appliedVoucher.isEmpty()) { %>
-            <span class="text-success fw-semibold"><%= appliedVoucher %> đã áp dụng</span>
+        <% if (appliedVoucher != null) { %>
+            <span class="text-success fw-semibold"><%= appliedVoucher.getCode() %> đã áp dụng</span>
         <% } else { %>
-            <a href="#" class="fw-semibold text-decoration-none" style="color:#6c3fc5">Xem thêm voucher</a>
+            <a href="${pageContext.request.contextPath}/voucher" class="fw-semibold text-decoration-none" style="color:#6c3fc5">Xem thêm voucher</a>
         <% } %>
     </div>
 </div>

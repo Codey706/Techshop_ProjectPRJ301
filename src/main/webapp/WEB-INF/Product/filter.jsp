@@ -53,8 +53,8 @@
                             <div class="p-3">
                                 <div class="bg-light rounded-4 d-flex align-items-center justify-content-center" style="height: 180px;">
                                     <c:choose>
-                                        <c:when test="${not empty p.image}">
-                                            <img src="${pageContext.request.contextPath}/assets/images/${p.image}" class="img-fluid h-100 object-fit-contain" alt="${p.productName}">
+                                        <c:when test="${not empty p.imageUrl}">
+                                            <img src="${pageContext.request.contextPath}/assets/images/products/${p.imageUrl}" class="img-fluid h-100 object-fit-contain" alt="${p.productName}">
                                         </c:when>
                                         <c:otherwise>
                                             <i class="fa-solid fa-laptop fs-1 opacity-25" style="color: #0056b3;"></i>
@@ -70,7 +70,7 @@
                             
                             <div class="card-footer bg-white border-0 d-flex align-items-center justify-content-between p-3 pt-0">
                                 <span class="fw-bold fs-6" style="color: #0056b3;">
-                                    <fmt:formatNumber value="24990000" type="currency" currencySymbol="đ" maxFractionDigits="0"/>
+                                    <fmt:formatNumber value="${p.price}" type="currency" currencySymbol="đ" maxFractionDigits="0"/>
                                 </span>
                                 <a href="${pageContext.request.contextPath}/product/detail?id=${p.productId}" class="btn btn-sm text-white px-3 fw-bold" style="background-color: #0056b3; border-radius: 8px;">
                                     Chi tiết
