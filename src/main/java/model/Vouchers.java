@@ -22,11 +22,12 @@ public class Vouchers {
     private Integer Quantity;
     private Integer UsedQuantity;
     private Integer Status;
+    private Timestamp CreatedDate;
 
     public Vouchers() {
     }
 
-    public Vouchers(Integer VoucherId, String Code, BigDecimal DiscountPercent, BigDecimal MinimumOrder, Timestamp StartDate, Timestamp ExpireDate, Integer Quantity, Integer UsedQuantity, Integer Status) {
+    public Vouchers(Integer VoucherId, String Code, BigDecimal DiscountPercent, BigDecimal MinimumOrder, Timestamp StartDate, Timestamp ExpireDate, Integer Quantity, Integer UsedQuantity, Integer Status, Timestamp CreatedDate) {
         this.VoucherId = VoucherId;
         this.Code = Code;
         this.DiscountPercent = DiscountPercent;
@@ -36,6 +37,7 @@ public class Vouchers {
         this.Quantity = Quantity;
         this.UsedQuantity = UsedQuantity;
         this.Status = Status;
+        this.CreatedDate = CreatedDate;
     }
 
     public Integer getVoucherId() {
@@ -74,6 +76,10 @@ public class Vouchers {
         return Status;
     }
 
+    public Timestamp getCreatedDate() {
+        return CreatedDate;
+    }
+
     public void setVoucherId(Integer VoucherId) {
         this.VoucherId = VoucherId;
     }
@@ -108,6 +114,10 @@ public class Vouchers {
 
     public void setStatus(Integer Status) {
         this.Status = Status;
+    }
+
+    public void setCreatedDate(Timestamp CreatedDate) {
+        this.CreatedDate = CreatedDate;
     }
 
 }

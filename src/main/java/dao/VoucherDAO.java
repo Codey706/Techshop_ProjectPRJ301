@@ -178,7 +178,7 @@ public class VoucherDAO extends DBContext {
             rs.getTimestamp("ExpireDate"),
             rs.getInt("Quantity"),
             rs.getInt("UsedQuantity"),
-            rs.getInt("Status")
+            rs.getInt("Status"), null
         );
     }
 

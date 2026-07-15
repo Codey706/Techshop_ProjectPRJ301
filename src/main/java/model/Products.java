@@ -7,6 +7,7 @@ import java.sql.Timestamp;
  * Đã cấu trúc lại Getter/Setter chuẩn CamelCase để dễ gọi từ file JSP/Servlet.
  */
 public class Products {
+
     private Integer productId;
     private Integer categoryId;
     private Integer brandId;
@@ -26,22 +27,23 @@ public class Products {
     private Timestamp publishedAt;
     private Timestamp createdAt;
     private Timestamp updatedAt;
-    
+
     // Các thuộc tính liên kết đối tượng (Object quan hệ)
     private Categories category;
     private Brands brand;
     private ProductImages productImg;
+    private ProductVariants productVariant;
 
     // 1. Constructor không tham số
     public Products() {
     }
 
     // 2. Constructor đầy đủ tham số
-    public Products(Integer productId, Integer categoryId, Integer brandId, String baseSKU, String productName, 
-                    String slug, Integer views, Integer sold, Boolean isFeatured, Boolean isNew, Boolean deleted, 
-                    Integer status, String description, Double price, String imageUrl, Integer createdBy, 
-                    Timestamp publishedAt, Timestamp createdAt, Timestamp updatedAt, 
-                    Categories category, Brands brand, ProductImages productImg) {
+    public Products(Integer productId, Integer categoryId, Integer brandId, String baseSKU, String productName,
+            String slug, Integer views, Integer sold, Boolean isFeatured, Boolean isNew, Boolean deleted,
+            Integer status, String description, Double price, String imageUrl, Integer createdBy,
+            Timestamp publishedAt, Timestamp createdAt, Timestamp updatedAt,
+            Categories category, Brands brand, ProductImages productImg, ProductVariants productVariant) {
         this.productId = productId;
         this.categoryId = categoryId;
         this.brandId = brandId;
@@ -64,12 +66,12 @@ public class Products {
         this.category = category;
         this.brand = brand;
         this.productImg = productImg;
+        this.productVariant = productVariant;
     }
 
     // ==========================================
     // GETTERS & SETTERS (Chuẩn camelCase)
     // ==========================================
-
     public Integer getProductId() {
         return productId;
     }
@@ -244,5 +246,13 @@ public class Products {
 
     public void setProductImg(ProductImages productImg) {
         this.productImg = productImg;
+    }
+
+    public ProductVariants getProductVariant() {
+        return productVariant;
+    }
+
+    public void setProductVariant(ProductVariants productVariant) {
+        this.productVariant = productVariant;
     }
 }

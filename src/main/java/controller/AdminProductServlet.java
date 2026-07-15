@@ -12,6 +12,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
+import model.Brands;
+import model.Categories;
 import model.Products;
 
 /**
@@ -27,15 +29,42 @@ public class AdminProductServlet extends HttpServlet {
 
         String view = request.getParameter("view");
 
-        
         if (view == null || view.equals("list")) {
             AdminProductDAO dao = new AdminProductDAO();
-            
-            List<Products> productList = dao.getList();
-            request.setAttribute("products", productList);
-            
+
+            String pageParam = request.getParameter("page");
+
+            int page = 1;
+
+            if (pageParam != null && !pageParam.isEmpty()) {
+                try {
+                    page = Integer.parseInt(pageParam);
+
+                    if (page <= 0) {
+                        page = 1;
+                    }
+
+                } catch (NumberFormatException e) {
+                    page = 1;
+                }
+            }
+
+            List<Products> list = dao.getProductsByPage(page);
+
+            request.setAttribute("products", list);
+            request.setAttribute("currentPage", page);
+            request.setAttribute("totalPages", dao.getTotalPages());
+
             request.getRequestDispatcher("/WEB-INF/admin/product/list.jsp").forward(request, response);
         } else if (view.equals("create")) {
+            AdminProductDAO dao = new AdminProductDAO();
+
+            List<Categories> categories = dao.getCategories();
+            List<Brands> brands = dao.getBrands();
+
+            request.setAttribute("categories", categories);
+            request.setAttribute("brands", brands);
+
             request.getRequestDispatcher("/WEB-INF/admin/product/create.jsp").forward(request, response);
         } else if (view.equals("edit")) {
             request.getRequestDispatcher("/WEB-INF/admin/product/update.jsp").forward(request, response);
@@ -49,6 +78,12 @@ public class AdminProductServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String action = request.getParameter("action");
 
+        if ("draft".equals(action)) {
+            // Lưu sản phẩm với Status = 0 (Draft)
+        } else if ("save".equals(action)) {
+            // Lưu sản phẩm với Status = 1 (Active)
+        }
     }
 }
