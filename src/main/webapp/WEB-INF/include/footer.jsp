@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/footer.css">
 <%-- Lượn sóng --%>
 <div class="w-100 overflow-hidden bg-light" style="height: 20px; margin-top: auto;">
@@ -78,9 +79,12 @@
             </div>
 
             <%-- Số lượng sản phẩm (badge) --%>
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="floating-cart-badge">
-                0
-            </span>
+            <c:if test="${sessionScope.cartCount > 0}">
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="floating-cart-badge">
+                    ${sessionScope.cartCount}
+                    <span class="visually-hidden">sản phẩm trong giỏ hàng</span>
+                </span>
+            </c:if>
         </a>
     </div>
 </footer>
