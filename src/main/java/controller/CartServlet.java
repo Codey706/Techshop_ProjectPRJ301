@@ -10,19 +10,38 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
+import model.Auth;
 import model.CartItem;
 import model.Vouchers;
 
 @WebServlet(name = "CartServlet", urlPatterns = {"/cart"})
 public class CartServlet extends HttpServlet {
 
+    /**
+     * Lấy userId của người dùng đang đăng nhập từ session.
+     * Trả về null nếu chưa đăng nhập.
+     */
+    private Integer getLoggedInUserId(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Auth user = (Auth) session.getAttribute("user");
+        if (user == null) {
+            return null;
+        }
+        return user.getUserId();
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         HttpSession session = request.getSession();
-        Integer userId = 1; // test tạm
-        session.setAttribute("userId", userId);
+
+        Integer userId = getLoggedInUserId(request);
+        if (userId == null) {
+            // Chưa đăng nhập => bắt buộc đăng nhập trước khi xem giỏ hàng
+            response.sendRedirect(request.getContextPath() + "/Auth?view=login");
+            return;
+        }
 
         CartDAO cartDAO = new CartDAO();
         List<CartItem> cartItems = cartDAO.getCartItems(userId);
@@ -50,8 +69,12 @@ public class CartServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession();
-        Integer userId = 1; // test tạm
-        session.setAttribute("userId", userId);
+
+        Integer userId = getLoggedInUserId(request);
+        if (userId == null) {
+            response.sendRedirect(request.getContextPath() + "/Auth?view=login");
+            return;
+        }
 
         CartDAO cartDAO = new CartDAO();
         String action = request.getParameter("action");
@@ -132,6 +155,13 @@ public class CartServlet extends HttpServlet {
                 session.removeAttribute("appliedVoucher");
                 session.removeAttribute("discountAmount");
                 session.setAttribute("cartCount", cartDAO.countCartItems(userId));
+
+            } else if ("clearAll".equals(action)) {
+                // Xóa toàn bộ sản phẩm trong giỏ hàng
+                cartDAO.clearCart(userId);
+                session.removeAttribute("appliedVoucher");
+                session.removeAttribute("discountAmount");
+                session.setAttribute("cartCount", 0);
             }
 
         } catch (Exception e) {

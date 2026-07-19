@@ -30,7 +30,7 @@
     </ol>
 </nav>
 
-<h4 class="fw-bold mb-1">?? Mã giảm giá</h4>
+<h4 class="fw-bold mb-1">Mã giảm giá</h4>
 <p class="text-muted mb-4">Chọn hoặc nhập mã</p>
 
 <!-- Thông tin hiện tại -->

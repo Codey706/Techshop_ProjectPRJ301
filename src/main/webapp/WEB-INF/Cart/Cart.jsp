@@ -30,9 +30,9 @@
 
     input[type=checkbox] { accent-color: #1C56B3; width: 18px; height: 18px; cursor: pointer; }
 
-    .shop-card-header { background-color: #ede7f6; border-bottom: 1px solid #d1c4e9; }
+    .shop-card-header { background-color: #3E8FFD; border-bottom: 1px solid #d1c4e9; }
 
-    .badge-variant { background-color: #ede7f6; color: #6c3fc5; font-weight: 500; }
+    .badge-variant { background-color: #3E8FFD; color: #F8FAFD; font-weight: 500; }
 
     .btn-qty { width: 30px; height: 30px; padding: 0; line-height: 1; border-color: #d1c4e9; color: #6c3fc5; }
     .btn-qty:hover { background-color: #ede7f6; border-color: #6c3fc5; }
@@ -91,8 +91,8 @@
 <div class="card border rounded-3 mb-4 overflow-hidden">
     <div class="shop-card-header px-3 py-2 d-flex align-items-center gap-2">
         <input type="checkbox" onclick="toggleAll(this)">
-        <i class="fa-solid fa-store" style="color:#6c3fc5"></i>
-        <span class="fw-semibold" style="color:#6c3fc5">TechShop</span>
+        <i class="fa-solid fa-store" style="color:#F8FAFD"></i>
+        <span class="fw-semibold" style="color:#F8FAFD">MiraiStore</span>
     </div>
 
     <% for (CartItem item : cartItems) {
@@ -163,6 +163,7 @@
         <span class="text-muted">Voucher của Shop</span>
         <% if (appliedVoucher != null) { %>
             <span class="text-success fw-semibold"><%= appliedVoucher.getCode() %> đã áp dụng</span>
+            <a href="${pageContext.request.contextPath}/voucher" class="fw-semibold text-decoration-none ms-2" style="color:#6c3fc5">Đổi voucher khác</a>
         <% } else { %>
             <a href="${pageContext.request.contextPath}/voucher" class="fw-semibold text-decoration-none" style="color:#6c3fc5">Xem thêm voucher</a>
         <% } %>
@@ -181,7 +182,11 @@
                 <input type="checkbox" id="footerCheck" onclick="toggleAll(this)">
                 Chọn tất cả (<%= cartItems.size() %>)
             </label>
-            <a href="#" class="text-danger small text-decoration-none">Xóa</a>
+            <form action="${pageContext.request.contextPath}/cart" method="POST"
+                  onsubmit="return confirm('Bạn có chắc muốn xóa toàn bộ sản phẩm trong giỏ hàng?');">
+                <input type="hidden" name="action" value="clearAll">
+                <button type="submit" class="btn btn-link text-danger small text-decoration-none p-0 border-0 align-baseline">Xóa</button>
+            </form>
         </div>
         <div class="d-flex align-items-center gap-4">
             <div class="text-end">
