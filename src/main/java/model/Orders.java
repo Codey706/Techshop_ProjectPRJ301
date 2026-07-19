@@ -6,12 +6,14 @@ package model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  *
  * @author HP
  */
 public class Orders {
+
     private Integer OrderId;
     private Integer UserId;
     private Integer VoucherId;
@@ -29,11 +31,17 @@ public class Orders {
     private String Note;
     private Integer Status;
     private Integer PaymentStatus;
+    private User user;
+    private Addresses address;
+    private ShippingProviders provider;
+    private Vouchers voucher;
+    private List<OrderDetails> orderDetails;
+    private Payment payment;
 
     public Orders() {
     }
 
-    public Orders(Integer OrderId, Integer UserId, Integer VoucherId, Integer ProviderId, Integer AddressId, Timestamp OrderDate, Timestamp UpdatedAt, BigDecimal Subtotal, BigDecimal ShippingFee, BigDecimal DiscountAmount, BigDecimal TotalAmount, String ReceiverName, String Phone, String ShippingAddress, String Note, Integer Status, Integer PaymentStatus) {
+    public Orders(Integer OrderId, Integer UserId, Integer VoucherId, Integer ProviderId, Integer AddressId, Timestamp OrderDate, Timestamp UpdatedAt, BigDecimal Subtotal, BigDecimal ShippingFee, BigDecimal DiscountAmount, BigDecimal TotalAmount, String ReceiverName, String Phone, String ShippingAddress, String Note, Integer Status, Integer PaymentStatus, User user, Addresses address, ShippingProviders provider, Vouchers voucher, List<OrderDetails> orderDetails, Payment payment) {
         this.OrderId = OrderId;
         this.UserId = UserId;
         this.VoucherId = VoucherId;
@@ -51,6 +59,12 @@ public class Orders {
         this.Note = Note;
         this.Status = Status;
         this.PaymentStatus = PaymentStatus;
+        this.user = user;
+        this.address = address;
+        this.provider = provider;
+        this.voucher = voucher;
+        this.orderDetails = orderDetails;
+        this.payment = payment;
     }
 
     public Integer getOrderId() {
@@ -121,6 +135,30 @@ public class Orders {
         return PaymentStatus;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public Addresses getAddress() {
+        return address;
+    }
+
+    public ShippingProviders getProvider() {
+        return provider;
+    }
+
+    public Vouchers getVoucher() {
+        return voucher;
+    }
+
+    public List<OrderDetails> getOrderDetails() {
+        return orderDetails;
+    }
+
+    public Payment getPayment() {
+        return payment;
+    }
+
     public void setOrderId(Integer OrderId) {
         this.OrderId = OrderId;
     }
@@ -188,5 +226,29 @@ public class Orders {
     public void setPaymentStatus(Integer PaymentStatus) {
         this.PaymentStatus = PaymentStatus;
     }
-    
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setAddress(Addresses address) {
+        this.address = address;
+    }
+
+    public void setProvider(ShippingProviders provider) {
+        this.provider = provider;
+    }
+
+    public void setVoucher(Vouchers voucher) {
+        this.voucher = voucher;
+    }
+
+    public void setOrderDetails(List<OrderDetails> orderDetails) {
+        this.orderDetails = orderDetails;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+    }
+
 }

@@ -193,7 +193,7 @@ public class OrderDAO extends DBContext {
                         rs.getString("ShippingAddress"),
                         rs.getString("Note"),
                         rs.getInt("Status"),
-                        rs.getInt("PaymentStatus")
+                        rs.getInt("PaymentStatus"), null, null, null, null, null, null
                 );
 
                 list.add(o);
@@ -324,7 +324,7 @@ public class OrderDAO extends DBContext {
                         rs.getString("ShippingAddress"),
                         rs.getString("Note"),
                         rs.getInt("Status"),
-                        rs.getInt("PaymentStatus")
+                        rs.getInt("PaymentStatus"), null, null, null, null, null, null
                 );
 
             }

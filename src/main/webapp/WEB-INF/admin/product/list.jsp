@@ -31,17 +31,30 @@
         background-color: #fff;
         border-color: #dee2e6;
     }
+
+    .action-btn{
+        width: 120px;
+        height: 36px;
+        padding: 0;
+        font-size: .9rem;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+    }
 </style>
 
-<div class="container mt-5">
+<div class="container mt-4">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="fw-bold">Product Management</h3>
+        <h2 class="fw-semibold mb-0">
+            <i class="bi bi-box-seam me-2 text-secondary"></i>
+            Product Management
+        </h2>
 
         <a href="${pageContext.request.contextPath}/admin/product?view=create"
-           class="btn btn-success">
-            <i class="bi bi-plus-circle-fill me-2"></i>
-            Add New Product
+           class="btn btn-success action-btn">
+            <i class="bi bi-plus-circle-fill me-1"></i>
+            Add Product
         </a>
     </div>
 
@@ -58,10 +71,10 @@
                         <div class="card h-100 border-0 shadow-sm p-3">
 
                             <%-- Product Image --%>
-                            <img src="${pageContext.request.contextPath}/assets/images/products/${p.productImg.imageUrl}"
-                                 class="img-fluid"
-                                 style="height:220px; object-fit:contain;"
-                                 alt="${p.productName}">
+                           <img src="${pageContext.request.contextPath}/assets/images/products/${p.imageUrl}"
+     class="img-fluid"
+     style="height:220px; object-fit:contain;"
+     alt="${p.productName}">
 
                             <%-- Product Name --%>
                             <h5 class="fw-bold mt-3 mb-2">
@@ -75,7 +88,15 @@
 
                             <%-- SKU --%>
                             <p class="text-muted mb-2">
-                                SKU: ${p.productVariant.variantSKU}
+                                SKU:
+<c:choose>
+    <c:when test="${not empty p.variants}">
+        ${p.variants[0].variantSKU}
+    </c:when>
+    <c:otherwise>
+        N/A
+    </c:otherwise>
+</c:choose>
                             </p>
 
                             <%-- Category --%>
@@ -136,16 +157,16 @@
                             </p>
 
                             <%-- Buttons --%>
-                            <div class="mt-auto d-flex gap-2">
+                            <div class="mt-auto d-flex justify-content-center gap-2">
 
                                 <a href="${pageContext.request.contextPath}/admin/product?view=edit&id=${p.productId}"
-                                   class="btn btn-primary flex-fill">
-                                    <i class="bi bi-pencil-square me-1"></i>Edit
+                                   class="btn btn-primary action-btn">
+                                    <i class="bi bi-pencil-square me-1"></i>
+                                    Edit
                                 </a>
 
                                 <a href="${pageContext.request.contextPath}/admin/product?view=delete&id=${p.productId}"
-                                   class="btn btn-danger flex-fill "
-                                   onclick="return confirm('Are you sure you want to delete this product?');">
+                                   class="btn btn-danger action-btn">
                                     <i class="bi bi-trash me-1"></i>
                                     Delete
                                 </a>

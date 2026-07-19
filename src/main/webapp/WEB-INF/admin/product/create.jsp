@@ -204,7 +204,7 @@
 
         <div class="d-flex justify-content-between align-items-start mb-4">
             <div>
-                <h3 class="fw-bold text-dark mb-1" letter-spacing: -0.025em;">Add New Product</h3>
+                <h3 class="fw-bold text-dark mb-1" style="letter-spacing: -0.025em;">Add New Product</h3>
                 <span class="text-muted small" style="font-size: 1rem">Fill in the information below to create a new product</span>
             </div>
             <div class="d-flex flex-column align-items-end mt-3">
@@ -214,7 +214,7 @@
             </div>
         </div>
 
-        <form action="${pageContext.request.contextPath}/admin/product?action=store" method="POST" enctype="multipart/form-data">
+        <form action="${pageContext.request.contextPath}/admin/product?action=create" method="POST" enctype="multipart/form-data">
             <div class="row g-4 align-items-stretch">
 
                 <div class="col-lg-8">
@@ -387,11 +387,11 @@
                             <img src="${pageContext.request.contextPath}/assets/images/banner2.jpg"
                                  alt="Banner">
                         </div>
-                                
+
                         <div class="preview-logo mt-3 d-none" id="banner2">
-    <img src="${pageContext.request.contextPath}/assets/images/banner4.jpg"
-         alt="Banner 2">
-</div>
+                            <img src="${pageContext.request.contextPath}/assets/images/banner4.jpg"
+                                 alt="Banner 2">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -461,30 +461,17 @@
         };
         reader.readAsDataURL(input.files[0]);
     }
-    
+
     const collapseInfo = document.getElementById("collapseInfo");
-const banner2 = document.getElementById("banner2");
+    const banner2 = document.getElementById("banner2");
 
-collapseInfo.addEventListener("shown.bs.collapse", function () {
-    banner2.classList.remove("d-none");
-});
+    collapseInfo.addEventListener("shown.bs.collapse", function () {
+        banner2.classList.remove("d-none");
+    });
 
-collapseInfo.addEventListener("hidden.bs.collapse", function () {
-    banner2.classList.add("d-none");
-});
-    <%--
-        // 3. Hiển thị ảnh tức thì lên khung Preview khi bấm chọn file
-        function handleImagePreview(input) {
-            const previewArea = document.getElementById('previewArea');
-            if (input.files && input.files[0]) {
-                const fileReader = new FileReader();
-                fileReader.onload = function (e) {
-                    previewArea.innerHTML = '<img src="' + e.target.result + '" class="img-fluid rounded shadow-sm" style="max-height:140px; object-fit:contain;">';
-                };
-                fileReader.readAsDataURL(input.files[0]);
-            }
-        }
-    --%>
+    collapseInfo.addEventListener("hidden.bs.collapse", function () {
+        banner2.classList.add("d-none");
+    });
 </script>
 
 <%@include file="/WEB-INF/include/footer.jsp"%>

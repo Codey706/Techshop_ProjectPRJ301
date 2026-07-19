@@ -95,14 +95,15 @@
     }
 
     .voucher-action .btn{
-        width: 110px;
-        height: 42px;
-        padding: 0;
-        margin: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+    width: 90px;
+    height: 34px;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: .9rem;
+}
 
     .voucher-ribbon{
         position:absolute;
@@ -116,16 +117,36 @@
         font-size:11px;
         font-weight:bold;
     }
+    
+    .page-item.active .page-link{
+    background:#6c757d;
+    border-color:#6c757d;
+    color:#fff;
+}
+
+.page-link{
+    color:#6c757d;
+}
+
+.page-link:hover{
+    background:#6c757d;
+    border-color:#6c757d;
+    color:#fff;
+}
 </style>
 
 <div class="container mt-4">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
 
-        <h3 class="fw-bold">Voucher Management</h3>
+        <h2 class="mb-3 fw-semibold">
+            <i class="bi bi-tag-fill text-secondary me-1"></i>
+        Voucher Management
+    </h2>
+
 
         <a href="${pageContext.request.contextPath}/admin/voucher?view=create"
-           class="btn btn-success">
+           class="btn btn-success btn-sm px-3">
             <i class="bi bi-plus-circle-fill me-2"></i>
             Add Voucher
         </a>
@@ -210,12 +231,12 @@
                         <div class="voucher-action">
 
                             <a href="${pageContext.request.contextPath}/admin/voucher?view=edit&id=${v.voucherId}"
-                               class="btn btn-primary me-3">
+                               class="btn btn-primary me-3 btn-sm px-3">
                                 <i class="bi bi-pencil-square me-1"></i> Edit
                             </a>
 
                             <a href="${pageContext.request.contextPath}/admin/voucher?view=delete&id=${v.voucherId}"
-                               class="btn btn-danger"
+                               class="btn btn-danger btn-sm px-3"
                                onclick="return confirm('Delete voucher?')">
                                 <i class="bi bi-trash me-1"></i> Delete
                             </a>

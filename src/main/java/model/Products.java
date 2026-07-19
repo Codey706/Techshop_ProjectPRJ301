@@ -1,6 +1,8 @@
 package model;
 
 import java.sql.Timestamp;
+import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Class đối tượng Products tương thích với Cơ sở dữ liệu và giao diện hệ thống.
@@ -32,18 +34,14 @@ public class Products {
     private Categories category;
     private Brands brand;
     private ProductImages productImg;
-    private ProductVariants productVariant;
+    private List<ProductVariants> variants;
 
     // 1. Constructor không tham số
     public Products() {
     }
 
     // 2. Constructor đầy đủ tham số
-    public Products(Integer productId, Integer categoryId, Integer brandId, String baseSKU, String productName,
-            String slug, Integer views, Integer sold, Boolean isFeatured, Boolean isNew, Boolean deleted,
-            Integer status, String description, Double price, String imageUrl, Integer createdBy,
-            Timestamp publishedAt, Timestamp createdAt, Timestamp updatedAt,
-            Categories category, Brands brand, ProductImages productImg, ProductVariants productVariant) {
+    public Products(Integer productId, Integer categoryId, Integer brandId, String baseSKU, String productName, String slug, Integer views, Integer sold, Boolean isFeatured, Boolean isNew, Boolean deleted, Integer status, String description, Double price, String imageUrl, Integer createdBy, Timestamp publishedAt, Timestamp createdAt, Timestamp updatedAt, Categories category, Brands brand, ProductImages productImg, List<ProductVariants> variants) {    
         this.productId = productId;
         this.categoryId = categoryId;
         this.brandId = brandId;
@@ -66,7 +64,7 @@ public class Products {
         this.category = category;
         this.brand = brand;
         this.productImg = productImg;
-        this.productVariant = productVariant;
+        this.variants = variants;
     }
 
     // ==========================================
@@ -248,11 +246,12 @@ public class Products {
         this.productImg = productImg;
     }
 
-    public ProductVariants getProductVariant() {
-        return productVariant;
+    public List<ProductVariants> getVariants() {
+        return variants;
     }
 
-    public void setProductVariant(ProductVariants productVariant) {
-        this.productVariant = productVariant;
+    public void setVariants(List<ProductVariants> variants) {
+        this.variants = variants;
     }
+
 }
