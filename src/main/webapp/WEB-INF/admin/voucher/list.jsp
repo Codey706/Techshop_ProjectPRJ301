@@ -136,6 +136,22 @@
 </style>
 
 <div class="container mt-4">
+    
+    <c:if test="${not empty sessionScope.success}">
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+
+        <i class="bi bi-check-circle-fill me-2"></i>
+        ${sessionScope.success}
+
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"></button>
+
+    </div>
+
+    <c:remove var="success" scope="session"/>
+
+</c:if>
 
     <div class="d-flex justify-content-between align-items-center mb-4">
 
@@ -231,13 +247,12 @@
                         <div class="voucher-action">
 
                             <a href="${pageContext.request.contextPath}/admin/voucher?view=edit&id=${v.voucherId}"
-                               class="btn btn-primary me-3 btn-sm px-3">
+                               class="btn btn-primary me-3 btn-sm px-5">
                                 <i class="bi bi-pencil-square me-1"></i> Edit
                             </a>
 
                             <a href="${pageContext.request.contextPath}/admin/voucher?view=delete&id=${v.voucherId}"
-                               class="btn btn-danger btn-sm px-3"
-                               onclick="return confirm('Delete voucher?')">
+                               class="btn btn-danger btn-sm px-5">
                                 <i class="bi bi-trash me-1"></i> Delete
                             </a>
 

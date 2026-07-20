@@ -1,155 +1,673 @@
-<%-- 
-    Document   : create
-    Created on : Jun 22, 2026, 12:17:06 PM
-    Author     : HP
---%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core"%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voucher giảm giá - TechShop</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/bootstrap.css">
-    <style>
-        body { background: #f8f9fa; }
-        .voucher-card {
-            border: 2px dashed #dee2e6;
-            border-radius: 12px;
-            transition: border-color .2s;
-            position: relative;
-            overflow: hidden;
-        }
-        .voucher-card:hover { border-color: #0d6efd; }
-        .voucher-card.applied { border-color: #198754; background: #f0fff4; }
-        .voucher-card.disabled-voucher { opacity: 0.55; pointer-events: none; }
-        .voucher-badge {
-            position: absolute;
-            top: 12px; right: -24px;
-            background: #0d6efd; color: white;
-            padding: 2px 32px;
-            font-size: 0.75rem;
-            transform: rotate(45deg);
-        }
-        .voucher-badge.success { background: #198754; }
-        .discount-big { font-size: 2rem; font-weight: 800; color: #dc3545; }
-        .apply-btn { min-width: 110px; }
-    </style>
-</head>
-<body>
+<%@include file="/WEB-INF/include/header.jsp"%>
+<%@include file="/WEB-INF/include/navbar.jsp"%>
 
-<div class="container py-4">
-    <div class="d-flex align-items-center gap-3 mb-4">
-        <a href="${pageContext.request.contextPath}/cart" class="btn btn-outline-secondary btn-sm">
-            ← Quay lại giỏ hàng
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<style>
+
+    body{
+        background:#f5f5f5;
+    }
+
+    .page-title{
+        font-weight:600;
+    }
+
+    .voucher-card{
+        background:#fff;
+        border-radius:12px;
+        box-shadow:0 3px 12px rgba(0,0,0,.08);
+        overflow:hidden;
+    }
+
+    .voucher-header{
+        background:#ee4d2d;
+        color:#fff;
+        padding:8px 16px;
+    }
+
+    .voucher-header h5{
+        margin:0;
+        font-size:18px;
+        font-weight:600;
+    }
+
+    .voucher-body{
+        padding:22px;
+    }
+
+    .form-label{
+        font-size:14px;
+        font-weight:600;
+        margin-bottom:6px;
+    }
+
+    .form-control,
+    .form-select{
+        height:42px;
+        border-radius:8px;
+        font-size:14px;
+    }
+
+    .form-control:focus,
+    .form-select:focus{
+        border-color:#ee4d2d;
+        box-shadow:0 0 0 .2rem rgba(238,77,45,.15);
+    }
+
+    .preview-card{
+        background:#fafafa;
+        border:1px dashed #ddd;
+        border-radius:10px;
+        padding:18px;
+        position:relative;
+        overflow:hidden;
+
+        display:flex;
+        flex-direction:column;
+        height:100%; 
+    }
+
+    .preview-card .card{
+        border:none;
+        border-radius:10px;
+        box-shadow:0 2px 10px rgba(0,0,0,.08)!important;
+    }
+
+    .preview-icon{
+        font-size:46px;
+        color:#ee4d2d;
+    }
+
+    #codePreview{
+        font-weight:600;
+        margin-top:10px;
+        margin-bottom:10px;
+    }
+
+    .discount-preview{
+        font-size:30px;
+        font-weight:bold;
+        color:#ee4d2d;
+    }
+
+    .btn-save{
+        background:#ee4d2d;
+        border:none;
+        color:#fff;
+        min-width:140px;
+    }
+
+    .btn-save:hover{
+        background:#d8431f;
+        color:#fff;
+    }
+
+    .btn{
+        border-radius:8px;
+    }
+
+    .status-box{
+        border:1px solid #e2e8f0;
+        border-radius:8px;
+        padding:.85rem 1rem;
+        cursor:pointer;
+        transition:all .2s ease;
+    }
+
+    .status-box.active-green{
+        border-color:#10b981;
+        background:rgba(16,185,129,.04);
+    }
+
+    .voucher{
+        display:flex;
+        min-height:165px;
+        background:#fff;
+        border-radius:12px;
+        overflow:hidden;
+        box-shadow:0 2px 8px rgba(0,0,0,.12);
+    }
+
+    .voucher-left{
+        width:100px;
+        background:#ee4d2d;
+        color:#fff;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        position:relative;
+    }
+
+    .voucher-left::before{
+        content:"";
+        position:absolute;
+        left:-5px;
+        top:0;
+        width:10px;
+        height:100%;
+        background:
+            radial-gradient(circle,#fafafa 5px,transparent 5.2px);
+        background-size:10px 14px;
+        background-repeat:repeat-y;
+    }
+
+    .voucher-left>div{
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+    }
+
+    .voucher-left i{
+        font-size:46px;
+    }
+
+    .voucher-left h6{
+        margin-top:8px;
+        letter-spacing:2px;
+        font-size:15px;
+        color:#fff;
+    }
+
+    .voucher-right{
+        flex:1;
+        padding:16px;
+    }
+
+    .discount{
+        font-size:24px;
+        color:#ee4d2d;
+        font-weight:bold;
+    }
+
+    .bottom-banner{
+        margin-top:10px;
+        display:flex;
+        justify-content:space-between;
+        align-items:flex-end;
+        gap:12px;
+    }
+
+    .banner-image{
+        width:min(260px,65%);
+        height:auto;
+        object-fit:contain;
+        flex-shrink:1;
+    }
+
+    .info-image{
+        width:min(130px,28%);
+        height:auto;
+        object-fit:contain;
+        margin-bottom:-30px;
+        flex-shrink:1;
+    }
+
+    @media (max-width: 992px){
+
+        .banner-image{
+            width:min(220px,60%);
+        }
+
+        .info-image{
+            width:min(100px,25%);
+            margin-bottom:-15px;
+        }
+
+    }
+
+    @media (max-width: 768px){
+
+        .banner-image{
+            width:min(180px,55%);
+        }
+
+        .info-image{
+            width:min(80px,22%);
+            margin-bottom:-8px;
+        }
+
+    }
+
+
+</style>
+
+<div class="container mt-4 mb-5" style="max-width:1100px;">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h2 class="page-title">
+            <i class="bi bi-ticket-perforated-fill text-secondary me-2"></i>
+            Create Voucher
+        </h2>
+
+        <a href="${pageContext.request.contextPath}/admin/voucher"
+           class="btn btn-outline-info btn-sm">
+            <i class="bi bi-arrow-return-left me-1"></i>
+            Back
         </a>
-        <h4 class="fw-bold mb-0">🎟️ Mã giảm giá khả dụng</h4>
+
     </div>
 
-    <%-- Thông tin đơn hàng hiện tại --%>
-    <div class="alert alert-info mb-4">
-        Tổng giỏ hàng của bạn: <strong>
-            <fmt:formatNumber value="${subtotal}" type="number" groupingUsed="true"/>đ
-        </strong>
-        <c:if test="${not empty appliedVoucher}">
-            — Đang áp dụng: <span class="badge bg-success">${appliedVoucher.code}</span>
-        </c:if>
-    </div>
+    <form action="${pageContext.request.contextPath}/admin/voucher?action=create"
+          method="post">
 
-    <%-- Nhập thủ công --%>
-    <div class="card shadow-sm mb-4">
-        <div class="card-body">
-            <h6 class="fw-semibold mb-3">Nhập mã thủ công</h6>
-            <form method="post" action="${pageContext.request.contextPath}/voucher/apply"
-                  class="d-flex gap-2">
-                <input type="text" name="voucherCode" class="form-control"
-                       placeholder="Nhập mã giảm giá..." style="max-width:300px;"
-                       value="${not empty appliedVoucher ? appliedVoucher.code : ''}">
-                <button type="submit" class="btn btn-primary apply-btn">Áp dụng</button>
-            </form>
-        </div>
-    </div>
+        <div class="voucher-card">
 
-    <%-- Danh sách voucher --%>
-    <c:choose>
-        <c:when test="${empty vouchers}">
-            <div class="text-center py-5 text-muted">
-                <p class="fs-5">Hiện không có voucher nào khả dụng.</p>
+            <div class="voucher-header">
+
+                <h5>
+                    <i class="bi bi-ticket-detailed-fill me-2"></i>
+                    Voucher Information
+                </h5>
+
             </div>
-        </c:when>
-        <c:otherwise>
-            <div class="row g-3">
-                <c:forEach var="v" items="${vouchers}">
-                    <%-- Kiểm tra đủ điều kiện đơn tối thiểu --%>
-                    <c:set var="eligible" value="${subtotal ge v.minimumOrder}"/>
-                    <%-- Kiểm tra đang được áp dụng --%>
-                    <c:set var="isApplied" value="${not empty appliedVoucher and appliedVoucher.voucherId eq v.voucherId}"/>
 
-                    <div class="col-md-6 col-lg-4">
-                        <div class="voucher-card p-4 h-100 ${isApplied ? 'applied' : ''} ${not eligible ? 'disabled-voucher' : ''}">
+            <div class="voucher-body">
 
-                            <%-- Ribbon --%>
-                            <c:if test="${isApplied}">
-                                <div class="voucher-badge success">Đang dùng</div>
-                            </c:if>
+                <div class="row g-4 align-items-stretch">
 
-                            <%-- Phần trăm giảm --%>
-                            <div class="discount-big mb-1">
-                                -<fmt:formatNumber value="${v.discountPercent}" maxFractionDigits="0"/>%
+                    <!-- LEFT -->
+
+                    <div class="col-lg-7">
+
+                        <div class="preview-card">
+
+                            <h6 class="fw-bold mb-3">
+                                <i class="bi bi-info-circle-fill me-2"></i>
+                                Voucher Information
+                            </h6>
+
+                            <div class="mb-3">
+
+                                <label class="form-label">
+                                    Voucher Code
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="code"
+                                    class="form-control"
+                                    placeholder="Example: SUMMER2026"
+                                    required>
+
                             </div>
-                            <div class="fw-semibold text-primary mb-1">${v.code}</div>
 
-                            <ul class="list-unstyled text-muted small mb-3">
-                                <li>✦ Đơn tối thiểu:
-                                    <strong><fmt:formatNumber value="${v.minimumOrder}" type="number" groupingUsed="true"/>đ</strong>
-                                </li>
-                                <li>✦ Còn lại: <strong>${v.quantity - v.usedQuantity}</strong> lượt</li>
-                                <li>✦ HSD: <strong>
-                                    <fmt:formatDate value="${v.expireDate}" pattern="dd/MM/yyyy"/>
-                                </strong></li>
-                            </ul>
+                            <div class="row">
 
-                            <c:if test="${not eligible}">
-                                <p class="text-warning small mb-2">
-                                    ⚠ Cần thêm
-                                    <fmt:formatNumber value="${v.minimumOrder - subtotal}" type="number" groupingUsed="true"/>đ
-                                    để dùng mã này
-                                </p>
-                            </c:if>
+                                <div class="col-md-6 mb-3">
 
-                            <%-- Nút áp dụng / hủy --%>
-                            <c:choose>
-                                <c:when test="${isApplied}">
-                                    <form method="post" action="${pageContext.request.contextPath}/voucher/remove">
-                                        <button type="submit" class="btn btn-outline-danger btn-sm w-100">
-                                            Hủy áp dụng
-                                        </button>
-                                    </form>
-                                </c:when>
-                                <c:when test="${eligible}">
-                                    <form method="post" action="${pageContext.request.contextPath}/voucher/apply">
-                                        <input type="hidden" name="voucherCode" value="${v.code}">
-                                        <button type="submit" class="btn btn-primary btn-sm w-100 apply-btn">
-                                            Dùng ngay
-                                        </button>
-                                    </form>
-                                </c:when>
-                                <c:otherwise>
-                                    <button class="btn btn-secondary btn-sm w-100" disabled>
-                                        Chưa đủ điều kiện
-                                    </button>
-                                </c:otherwise>
-                            </c:choose>
+                                    <label class="form-label">
+                                        Discount (%)
+                                    </label>
+
+                                    <input
+                                        type="number"
+                                        id="discount"
+                                        name="discountPercent"
+                                        class="form-control"
+                                        value="10"
+                                        min="1"
+                                        max="100"
+                                        required>
+
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+
+                                    <label class="form-label">
+                                        Quantity
+                                    </label>
+
+                                    <input
+                                        type="number"
+                                        name="quantity"
+                                        class="form-control"
+                                        value="100"
+                                        min="1"
+                                        required>
+
+                                </div>
+
+                            </div>
+
+                            <div class="mb-3">
+
+                                <label class="form-label">
+                                    Minimum Order (VNĐ)
+                                </label>
+
+                                <input
+                                    type="number"
+                                    name="minimumOrder"
+                                    class="form-control"
+                                    value="0"
+                                    min="0"
+                                    required>
+
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-md-6 mb-3">
+
+                                    <label class="form-label">
+                                        Start Date
+                                    </label>
+
+                                    <input
+                                        type="date"
+                                        name="startDate"
+                                        class="form-control"
+                                        required>
+
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+
+                                    <label class="form-label">
+                                        Expire Date
+                                    </label>
+
+                                    <input
+                                        type="date"
+                                        name="expireDate"
+                                        class="form-control"
+                                        required>
+
+                                </div>
+
+                            </div>
+
+                            <div class="bottom-banner">
+                                <img src="${pageContext.request.contextPath}/assets/images/banner2.jpg"
+                                     class="banner-image"
+                                     alt="Banner">
+
+                                <img src="${pageContext.request.contextPath}/assets/images/view-more-mascot.jpg"
+                                     class="info-image"
+                                     alt="Mascot">
+                            </div>
 
                         </div>
+
                     </div>
-                </c:forEach>
+
+                    <!-- RIGHT -->
+
+                    <div class="col-lg-5">
+
+                        <div class="preview-card">
+
+                            <h6 class="fw-bold mb-3">
+                                <i class="bi bi-eye-fill me-2"></i>
+                                Live Preview
+                            </h6>
+
+                            <div class="voucher">
+
+                                <div class="voucher-left">
+
+                                    <div>
+
+                                        <i class="bi bi-ticket-perforated-fill"></i>
+
+                                        <h6>VOUCHER</h6>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="voucher-right">
+
+                                    <h5 id="codePreview">
+                                        VOUCHER CODE
+                                    </h5>
+
+                                    <div class="discount">
+
+                                        Discount <span id="discountPreview">10</span>%
+
+                                    </div>
+
+                                    <div class="small text-muted">
+
+                                        Minimum Order
+                                        <span id="minimumPreview">0</span> VNĐ
+
+                                    </div>
+
+                                    <div class="small mt-1">
+
+                                        Remaining
+                                        <b id="quantityPreview">100</b>/100
+
+                                    </div>
+
+                                    <div class="small text-secondary mt-1">
+
+                                        <i class="bi bi-clock-history me-1"></i>
+
+                                        <span id="startPreview">dd/MM/yyyy</span>
+
+                                        -
+
+                                        <span id="expirePreview">dd/MM/yyyy</span>
+
+                                    </div>
+
+                                    <div class="mt-3">
+
+                                        <span class="badge bg-success"
+                                              id="statusPreview">
+
+                                            Active
+
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <h6 class="fw-bold mb-3 mt-5">
+                                <i class="bi bi-toggle-on me-2"></i>
+                                Voucher Status
+                            </h6>
+
+                            <div class="d-flex flex-column gap-3">
+
+                                <div class="status-box active-green d-flex align-items-start"
+                                     id="boxActive">
+
+                                    <input class="form-check-input mt-1 me-3"
+                                           type="radio"
+                                           name="status"
+                                           id="statusActive"
+                                           value="1"
+                                           checked
+                                           style="border-color:#10b981;background-color:#10b981;">
+
+                                    <label for="statusActive"
+                                           class="w-100 cursor-pointer">
+
+                                        <span class="d-block fw-bold text-success small">
+                                            Active
+                                        </span>
+
+                                        <span class="text-muted d-block"
+                                              style="font-size:.75rem;margin-top:1px;">
+
+                                            Voucher is available for customers
+
+                                        </span>
+
+                                    </label>
+
+                                </div>
+
+                                <div class="status-box d-flex align-items-start"
+                                     id="boxInactive">
+
+                                    <input class="form-check-input mt-1 me-3"
+                                           type="radio"
+                                           name="status"
+                                           id="statusInactive"
+                                           value="0"
+                                           style="border-color:#6c757d;background-color:#6c757d;">
+
+                                    <label for="statusInactive"
+                                           class="w-100 cursor-pointer">
+
+                                        <span class="d-block fw-semibold text-dark small">
+                                            Inactive
+                                        </span>
+
+                                        <span class="text-muted d-block"
+                                              style="font-size:.75rem;margin-top:1px;">
+
+                                            Voucher is hidden and cannot be used
+
+                                        </span>
+
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <hr class="my-4">
+
+                <div class="text-end">
+
+                    <a href="${pageContext.request.contextPath}/admin/voucher"
+                       class="btn btn-primary btn-sm me-4">
+
+                        <i class="bi bi-arrow-return-left me-1"></i>
+                        Cancel
+
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-success btn-sm">
+
+                        <i class="bi bi-check-circle-fill me-1"></i>
+                        Create Voucher
+
+                    </button>
+
+                </div>
+
             </div>
-        </c:otherwise>
-    </c:choose>
+
+        </div>
+
+    </form>
+
 </div>
 
-<script src="${pageContext.request.contextPath}/assets/js/bootstrap.bundle.js"></script>
-</body>
-</html>
+<script>
+
+    const codeInput = document.querySelector("input[name='code']");
+    const discountInput = document.getElementById("discount");
+    const quantityInput = document.querySelector("input[name='quantity']");
+    const minimumInput = document.querySelector("input[name='minimumOrder']");
+    const startInput = document.querySelector("input[name='startDate']");
+    const expireInput = document.querySelector("input[name='expireDate']");
+
+    codeInput.addEventListener("input", function () {
+
+        document.getElementById("codePreview").innerHTML =
+                this.value === "" ? "VOUCHER CODE" : this.value;
+
+    });
+
+    discountInput.addEventListener("input", function () {
+
+        document.getElementById("discountPreview").innerHTML = this.value;
+
+    });
+
+    quantityInput.addEventListener("input", function () {
+
+        document.getElementById("quantityPreview").innerHTML = this.value;
+
+    });
+
+    minimumInput.addEventListener("input", function () {
+
+        document.getElementById("minimumPreview").innerHTML =
+                Number(this.value).toLocaleString("vi-VN");
+
+    });
+
+    startInput.addEventListener("change", function () {
+
+        if (this.value !== "") {
+
+            document.getElementById("startPreview").innerHTML =
+                    this.value.split("-").reverse().join("/");
+
+        }
+
+    });
+
+    expireInput.addEventListener("change", function () {
+
+        if (this.value !== "") {
+
+            document.getElementById("expirePreview").innerHTML =
+                    this.value.split("-").reverse().join("/");
+
+        }
+
+    });
+
+    const radioActive = document.getElementById("statusActive");
+    const radioInactive = document.getElementById("statusInactive");
+
+    const boxActive = document.getElementById("boxActive");
+    const boxInactive = document.getElementById("boxInactive");
+
+    const statusPreview = document.getElementById("statusPreview");
+
+    function updateStatusUI() {
+
+        if (radioActive.checked) {
+
+            boxActive.classList.add("active-green");
+            boxInactive.classList.remove("active-green");
+
+            statusPreview.className = "badge bg-success";
+            statusPreview.innerHTML = "Active";
+
+        } else {
+
+            boxInactive.classList.add("active-green");
+            boxActive.classList.remove("active-green");
+
+            statusPreview.className = "badge bg-secondary";
+            statusPreview.innerHTML = "Inactive";
+
+        }
+
+    }
+
+    radioActive.addEventListener("change", updateStatusUI);
+    radioInactive.addEventListener("change", updateStatusUI);
+
+    updateStatusUI();
+</script>
+
+<%@include file="/WEB-INF/include/footer.jsp"%>

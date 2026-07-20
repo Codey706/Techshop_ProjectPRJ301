@@ -103,6 +103,14 @@ public class AdminOrderServlet extends HttpServlet {
 
         } else if (view.equals("update-status")) {
 
+            int id = Integer.parseInt(request.getParameter("id"));
+
+            AdminOrderDAO dao = new AdminOrderDAO();
+
+            Orders order = dao.getOrderById(id);
+
+            request.setAttribute("order", order);
+
             request.getRequestDispatcher("/WEB-INF/admin/order/update-status.jsp")
                     .forward(request, response);
 
@@ -113,6 +121,39 @@ public class AdminOrderServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        String action = request.getParameter("action");
+
+        if ("create".equals(action)) {
+
+        } else if ("updateStatus".equals(action)) {
+
+            int orderId = Integer.parseInt(request.getParameter("orderId"));
+
+            int status = Integer.parseInt(request.getParameter("status"));
+
+            AdminOrderDAO dao = new AdminOrderDAO();
+
+            int result = dao.updateStatus(orderId, status);
+
+            if (result > 0) {
+
+                request.getSession().setAttribute("success", "Update order status successfully!");
+
+                response.sendRedirect(request.getContextPath()
+                        + "/admin/order?view=detail&id=" + orderId);
+
+            } else {
+
+                Orders order = dao.getOrderById(orderId);
+
+                request.setAttribute("order", order);
+
+                request.setAttribute("error", "Update order status failed!");
+
+                request.getRequestDispatcher("/WEB-INF/admin/order/update-status.jsp")
+                        .forward(request, response);
+            }
+        }
     }
 
 }

@@ -285,7 +285,7 @@
                             </c:when>
 
                             <c:when test="${o.status==2}">
-                                <span class="badge bg-warning">Shipping</span>
+                                <span class="badge bg-shopee">Shipping</span>
                             </c:when>
 
                             <c:when test="${o.status==3}">
@@ -312,21 +312,25 @@
                     <div class="col-md-6">
 
                         <p>
+                             <i class="bi bi-person-check text-primary me-2"></i>
                             <b>Receiver:</b>
                             ${o.receiverName}
                         </p>
 
                         <p>
+                            <i class="bi bi-telephone text-success me-2"></i>
                             <b>Phone:</b>
                             ${o.phone}
                         </p>
 
                         <p>
+                            <i class="bi bi-calendar-event text-danger me-2"></i>
                             <b>Order Date:</b>
                             ${o.orderDate}
                         </p>
 
                         <p>
+                            <i class="bi bi-cash-coin text-warning me-2"></i>
                             <b>Total:</b>
                             <span class="text-danger fw-bold fs-5">
                                 ${o.totalAmount} VNĐ
@@ -338,6 +342,7 @@
                     <div class="col-md-6">
 
                         <p>
+                             <i class="bi bi-geo-alt-fill text-danger me-2"></i>
                             <b>Address:</b><br>
 
                             ${o.address.street},
@@ -347,11 +352,13 @@
                         </p>
 
                         <p>
+                            <i class="bi bi-truck text-shopee me-2"></i>
                             <b>Shipping Provider:</b>
                             ${o.provider.providerName}
                         </p>
 
                         <p>
+                            <i class="bi bi-ticket-perforated text-warning me-2"></i>
                             <b>Voucher:</b>
 
                             <c:choose>
@@ -369,17 +376,19 @@
                         </p>
 
                         <p>
-
+ <i class="bi bi-credit-card text-success me-2"></i>
                             <b>Payment:</b>
 
                             <c:choose>
 
                                 <c:when test="${o.paymentStatus==1}">
-                                    <span class="badge bg-success">Paid</span>
+                                    <span class="badge bg-success">
+                                        Paid</span>
                                 </c:when>
 
                                 <c:otherwise>
                                     <span class="badge bg-secondary">
+                                        
                                         Unpaid
                                     </span>
                                 </c:otherwise>
@@ -411,11 +420,10 @@
 
                     </a>
 
-                    <a href="${pageContext.request.contextPath}/admin/order/update?id=${o.orderId}"
+                    <a href="${pageContext.request.contextPath}/admin/order?view=update-status&id=${o.orderId}"
                        class="btn btn-success btn-sm">
                         <i class="bi bi-pencil-square me-1"></i>
                         Edit Status
-
                     </a>
 
                 </div>

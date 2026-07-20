@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,8 +86,26 @@ public class AdminVoucherServlet extends HttpServlet {
         } else if (view.equals("create")) {
             request.getRequestDispatcher("/WEB-INF/admin/voucher/create.jsp").forward(request, response);
         } else if (view.equals("edit")) {
+
+            int id = Integer.parseInt(request.getParameter("id"));
+
+            AdminVoucherDAO dao = new AdminVoucherDAO();
+
+            Vouchers voucher = dao.getVoucherById(id);
+
+            request.setAttribute("voucher", voucher);
+
             request.getRequestDispatcher("/WEB-INF/admin/voucher/update.jsp").forward(request, response);
         } else if (view.equals("delete")) {
+
+            int id = Integer.parseInt(request.getParameter("id"));
+
+            AdminVoucherDAO dao = new AdminVoucherDAO();
+
+            Vouchers voucher = dao.getVoucherById(id);
+
+            request.setAttribute("voucher", voucher);
+
             request.getRequestDispatcher("/WEB-INF/admin/voucher/delete.jsp").forward(request, response);
         } else {
 
@@ -96,6 +115,143 @@ public class AdminVoucherServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String action = request.getParameter("action");
+
+        if ("create".equals(action)) {
+
+            String code = request.getParameter("code");
+
+            BigDecimal discountPercent = new BigDecimal(
+                    request.getParameter("discountPercent"));
+
+            BigDecimal minimumOrder = new BigDecimal(
+                    request.getParameter("minimumOrder"));
+
+            Timestamp startDate = Timestamp.valueOf(
+                    request.getParameter("startDate") + " 00:00:00");
+
+            Timestamp expireDate = Timestamp.valueOf(
+                    request.getParameter("expireDate") + " 23:59:59");
+
+            int quantity = Integer.parseInt(
+                    request.getParameter("quantity"));
+
+            int status = Integer.parseInt(
+                    request.getParameter("status"));
+
+            Vouchers voucher = new Vouchers();
+
+            voucher.setCode(code);
+            voucher.setDiscountPercent(discountPercent);
+            voucher.setMinimumOrder(minimumOrder);
+            voucher.setStartDate(startDate);
+            voucher.setExpireDate(expireDate);
+            voucher.setQuantity(quantity);
+
+            // Voucher mới tạo chưa được sử dụng
+            voucher.setUsedQuantity(0);
+
+            voucher.setStatus(status);
+
+            AdminVoucherDAO dao = new AdminVoucherDAO();
+
+            int result = dao.insertVoucher(voucher);
+
+            if (result > 0) {
+                
+                 request.getSession().setAttribute("success", "Create voucher successfully!");
+
+                response.sendRedirect(request.getContextPath() + "/admin/voucher");
+
+            } else {
+
+                request.setAttribute("error", "Create voucher failed!");
+
+                request.getRequestDispatcher("/WEB-INF/admin/voucher/create.jsp")
+                        .forward(request, response);
+            }
+        } else if ("edit".equals(action)) {
+
+            int voucherId = Integer.parseInt(request.getParameter("voucherId"));
+
+            String code = request.getParameter("code");
+
+            BigDecimal discountPercent
+                    = new BigDecimal(request.getParameter("discountPercent"));
+
+            BigDecimal minimumOrder
+                    = new BigDecimal(request.getParameter("minimumOrder"));
+
+            Timestamp startDate
+                    = Timestamp.valueOf(request.getParameter("startDate") + " 00:00:00");
+
+            Timestamp expireDate
+                    = Timestamp.valueOf(request.getParameter("expireDate") + " 23:59:59");
+
+            int quantity
+                    = Integer.parseInt(request.getParameter("quantity"));
+
+            int status
+                    = Integer.parseInt(request.getParameter("status"));
+
+            Vouchers voucher = new Vouchers();
+
+            voucher.setVoucherId(voucherId);
+            voucher.setCode(code);
+            voucher.setDiscountPercent(discountPercent);
+            voucher.setMinimumOrder(minimumOrder);
+            voucher.setStartDate(startDate);
+            voucher.setExpireDate(expireDate);
+            voucher.setQuantity(quantity);
+            voucher.setStatus(status);
+
+            AdminVoucherDAO dao = new AdminVoucherDAO();
+
+            int result = dao.updateVoucher(voucher);
+
+            if (result > 0) {
+                
+                 request.getSession().setAttribute("success", "Update voucher successfully!");
+
+                response.sendRedirect(request.getContextPath() + "/admin/voucher");
+
+            } else {
+
+                request.setAttribute("voucher", voucher);
+                request.setAttribute("error", "Update voucher failed!");
+
+                request.getRequestDispatcher("/WEB-INF/admin/voucher/update.jsp")
+                        .forward(request, response);
+
+            }
+
+        } else if ("delete".equals(action)) {
+
+            int voucherId = Integer.parseInt(request.getParameter("voucherId"));
+
+            AdminVoucherDAO dao = new AdminVoucherDAO();
+
+            int result = dao.deleteVoucher(voucherId);
+
+            if (result > 0) {
+
+                request.getSession().setAttribute("success", "Delete voucher successfully!");
+                
+                response.sendRedirect(request.getContextPath() + "/admin/voucher");
+
+            } else {
+
+                Vouchers voucher = dao.getVoucherById(voucherId);
+
+                request.setAttribute("voucher", voucher);
+                request.setAttribute("error", "Delete voucher failed!");
+
+                request.getRequestDispatcher("/WEB-INF/admin/voucher/delete.jsp")
+                        .forward(request, response);
+
+            }
+
+        }
 
     }
 

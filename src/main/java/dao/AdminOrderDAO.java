@@ -514,4 +514,26 @@ public class AdminOrderDAO extends DBContext {
         return payment;
     }
 
+    public int updateStatus(int orderId, int status) {
+
+        String sql = "UPDATE Orders SET Status = ? WHERE OrderId = ?";
+
+        try {
+
+            PreparedStatement st = this.getConnection().prepareStatement(sql);
+
+            st.setInt(1, status);
+            st.setInt(2, orderId);
+
+            return st.executeUpdate();
+
+        } catch (SQLException ex) {
+
+            Logger.getLogger(AdminOrderDAO.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
+
+        return 0;
+    }
+
 }
